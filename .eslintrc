@@ -1,0 +1,109 @@
+{
+  "extends": ["react-app", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  // "ignorePatterns": ["**/mybricksRes/*"],
+  "rules": {
+    "no-control-regex": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "(useRecoilCallback|useRecoilTransaction_UNSTABLE)"
+      }
+    ],
+    "no-useless-escape": "off",
+    "no-unused-expressions": "off",
+    "no-use-before-define": "off",
+    "no-sequences": "off",
+    "no-self-assign": "off",
+    "eqeqeq": "off",
+    "react/jsx-closing-tag-location": "error",
+    "react/jsx-closing-bracket-location": "error",
+    "no-return-assign": "error",
+    "no-trailing-spaces": "error",
+    "array-callback-return": "error",
+    "react/no-unused-prop-types": "off",
+    "no-nested-ternary": "off",
+    "no-unreachable": "error",
+    "no-useless-return": "off",
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/no-shadow": "off",
+    "no-shadow": "off",
+    "no-confusing-arrow": "off",
+    "function-paren-newline": "off",
+    "semi": [2, "never"],
+    "@typescript-eslint/comma-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "import/no-duplicates": [
+      "error",
+      {
+        "considerQueryString": true
+      }
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": false
+      }
+    ],
+    "object-shorthand": ["error", "always"],
+    "react/no-unknown-property": [
+      "error",
+      {
+        "ignore": ["fill-rule", "stroke-width", "stroke-linecap", "stroke-linejoin"]
+      }
+    ],
+    "react/jsx-boolean-value": [
+      "error",
+      "never",
+      {
+        "always": ["personal"]
+      }
+    ],
+    "react/self-closing-comp": [
+      "error",
+      {
+        "component": true,
+        "html": true
+      }
+    ],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all",
+        "ignoreReadBeforeAssign": true
+      }
+    ],
+    "spaced-comment": [
+      "error",
+      "always",
+      {
+        "line": {
+          "markers": ["/"],
+          "exceptions": ["-", "+"]
+        },
+        "block": {
+          "markers": ["!"],
+          "exceptions": ["*"],
+          "balanced": true
+        }
+      }
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
