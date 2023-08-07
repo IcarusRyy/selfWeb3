@@ -1,21 +1,21 @@
-import React, { lazy, Suspense, useState } from 'react'
-import { RouterProvider } from 'react-router-dom'
-import { globalRouters } from '../router'
+import React from 'react'
+import { useRoutes } from 'react-router-dom'
+import { routes } from '../router'
 import { Layout } from 'antd'
 import Headers from '@/page/header'
 import styles from './app.less'
-const { Header, Content, Footer } = Layout
+import MyMenu from './menu'
+const { Header, Content } = Layout
 function App() {
-  console.log(globalRouters, 'globalRouters')
+  const element = useRoutes(routes)
   return (
     <>
       <Layout className={`layout  ${styles.layoutBox}`}>
         <Header className={styles.headerBox}>
+          <MyMenu routes={routes} />
           <Headers />
         </Header>
-        <Content className={` ${styles.contentBox}`}>
-          <RouterProvider router={globalRouters} />
-        </Content>
+        <Content className={` ${styles.contentBox}`}>{element}</Content>
       </Layout>
     </>
   )

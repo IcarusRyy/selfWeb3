@@ -3,7 +3,7 @@ import styles from './index.less'
 import { Button } from 'antd'
 const Header = () => {
   return (
-    <div className={styles.headersBox}>
+    <div className={`${styles.headersBox}`}>
       <Button>Connect Wallet</Button>
     </div>
   )
