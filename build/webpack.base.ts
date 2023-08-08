@@ -93,6 +93,11 @@ const baseConfig: Configuration = {
                 modules: true,
                 // 如果要在less中写类型js的语法，需要加这一个配置
                 javascriptEnabled: true,
+                globalVars: {
+                  mainColor: '#09a29d',
+                  amsColor: 'rgb(235, 92, 32)',
+                  tfnColor: '#86E3CE',
+                },
               },
             },
           },

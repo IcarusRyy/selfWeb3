@@ -94,6 +94,18 @@ const prodConfig: Configuration = merge(baseConfig, {
           chunks: 'all',
           priority: 2,
         },
+        vendors_antd_icons: {
+          test: /[\\/]node_modules[\\/]@ant-design[\\/]icons/,
+          name: 'vendors_antd_icons',
+          chunks: 'all',
+          priority: 3,
+        },
+        vendors_classnames: {
+          test: /[\\/]node_modules[\\/](classnames|clsx)[\\/]/,
+          name: 'vendors_classnames',
+          chunks: 'all',
+          priority: 4,
+        },
         commons: {
           // 提取页面公共代码
           name: 'commons', // 提取文件命名为commons

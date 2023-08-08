@@ -1,7 +1,5 @@
 @fontColor: #FFF;
-@amsColor: rgb(235, 92, 32);
 @secondFontColor: hsla(205, 13%, 66%, 1);
-@tfnColor: #86E3CE;
 
 .depositBox {
   width: 33%;
@@ -53,9 +51,9 @@
     .fromAmountBox {
       color: @fontColor;
 
-      background-color: #34353b;
+      background-color: @mainColor;
 
-      border: 1px solid #2d2e33;
+      border: 1px solid @amsColor;
       padding: 12px 16px;
       margin-top: 10px;
       border-radius: 10px;
@@ -72,7 +70,8 @@
     text-align: center;
 
     .swapIcon {
-      background-color: #34353b;
+      background-color: @mainColor;
+
       color: @amsColor;
       transform: rotate(90deg);
       font-size: 30px;

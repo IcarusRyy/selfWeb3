@@ -7,7 +7,7 @@ const BottomBox = () => {
     <div className={classNames('flexcc', styles.bottomBox)}>
       <div className={styles.lineBox}>
         <div className={styles.line}></div>
-        <div className={styles.lineContent}>lineBox</div>
+        <div className={styles.lineContent}>Third Party Bridge</div>
       </div>
       <Button className="baseBtn mt10">待补充</Button>
       <div className={classNames('mt10 ft12', styles.bottomContent)}>
