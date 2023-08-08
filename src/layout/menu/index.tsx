@@ -4,13 +4,15 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import styles from './index.less'
 interface MyMenuProps {
   routes: any[]
+  isMobile: boolean
 }
 
 const MyMenu = (props: MyMenuProps) => {
+  const { routes, isMobile } = props
   const [selectKey, setSelectKey] = useState<string[]>()
   const navigate = useNavigate()
   const location = useLocation()
-  const { routes } = props
+
   const items = routes
     .filter(item => item.isMenu)
     .map(item => ({
@@ -27,6 +29,9 @@ const MyMenu = (props: MyMenuProps) => {
   useEffect(() => {
     handleSelectKeys(location.pathname)
   }, [location])
+  // if (isMobile) {
+  //   return <>123</>
+  // }
   return (
     <>
       <Menu

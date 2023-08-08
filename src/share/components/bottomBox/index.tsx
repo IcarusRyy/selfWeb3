@@ -10,7 +10,7 @@ const BottomBox = () => {
         <div className={styles.lineContent}>Third Party Bridge</div>
       </div>
       <Button className="baseBtn mt10">待补充</Button>
-      <div className={classNames('mt10 ft12', styles.bottomContent)}>
+      <div className={classNames('mt10', styles.bottomContent)}>
         These are independent service providers that BNB Chain is linking to for your convenience -
         BNB Chain has no responsibility for their operation.
       </div>

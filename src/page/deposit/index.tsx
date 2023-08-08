@@ -32,7 +32,7 @@ const DepositPage = () => {
             <div className="mt10">Balance: 0 BNB</div>
           </div>
         </div>
-        <div className={classNames('mt30', styles.swapBox)}>
+        <div className={classNames(styles.swapBox)}>
           <SwapOutlined className={styles.swapIcon} onClick={handleToWithDrawPage} />
         </div>
         <ToBox title="To opBNB Testnet" receiveBalance={0} currentBalance={0} />
