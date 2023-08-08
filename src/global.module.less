@@ -17,6 +17,10 @@ h2 {
   justify-content: center;
 }
 
+.h100 {
+  height: 100%;
+}
+
 // 颜色相关
 .red {
   color: red;
@@ -24,4 +28,41 @@ h2 {
 
 .green {
   color: green;
+}
+
+@tfnColor: #86E3CE;
+@amsColor: rgb(235, 92, 32);
+
+// 颜色相关
+.mt10 {
+  margin-top: 10px;
+}
+
+.mt20 {
+  margin-top: 20px;
+}
+
+.mt30 {
+  margin-top: 30px;
+}
+
+// 字体相关
+.ft10 {
+  font-size: 10px;
+}
+
+.ft12 {
+  font-size: 12px;
+}
+
+// 按钮相关
+.baseBtn {
+  background-color: @amsColor;
+  border: none;
+  color: #FFF;
+
+  &:hover {
+    color: @tfnColor  !important;
+    border: none;
+  }
 }

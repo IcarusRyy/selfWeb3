@@ -4,7 +4,7 @@ import { Button } from 'antd'
 const Header = () => {
   return (
     <div className={`${styles.headersBox}`}>
-      <Button>Connect Wallet</Button>
+      <Button className={styles.headerBtn}>Connect Wallet</Button>
     </div>
   )
 }

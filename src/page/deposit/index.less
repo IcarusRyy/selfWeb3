@@ -1,0 +1,85 @@
+@fontColor: #FFF;
+@amsColor: rgb(235, 92, 32);
+@secondFontColor: hsla(205, 13%, 66%, 1);
+@tfnColor: #86E3CE;
+
+.depositBox {
+  width: 33%;
+  height: 80%;
+  background-color: @tfnColor;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  color: @amsColor;
+
+  padding: 18px 24px;
+  overflow: hidden;
+  overflow-y: auto;
+
+  .titleBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    p {
+      color: @fontColor;
+    }
+  }
+
+  .fromBox {
+    .fromTitleBox {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .fromLeftTitle {
+        color: @fontColor;
+
+      }
+
+      .fromRightTitle {
+        // color: #CC9D09;
+        color: @amsColor;
+        cursor: pointer;
+        text-decoration: underline;
+
+        &:hover {
+          color: #F0B90B;
+        }
+      }
+    }
+
+    .fromAmountBox {
+      color: @fontColor;
+
+      background-color: #34353b;
+
+      border: 1px solid #2d2e33;
+      padding: 12px 16px;
+      margin-top: 10px;
+      border-radius: 10px;
+
+      .fromInput {
+
+        border: none;
+
+      }
+    }
+  }
+
+  .swapBox {
+    text-align: center;
+
+    .swapIcon {
+      background-color: #34353b;
+      color: @amsColor;
+      transform: rotate(90deg);
+      font-size: 30px;
+      color: #FFF;
+      border-radius: 50%;
+    }
+  }
+
+
+}

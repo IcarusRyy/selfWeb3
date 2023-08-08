@@ -1,6 +1,19 @@
 @headerBgc: #181A1E;
+@amsColor: rgb(235, 92, 32);
+@tfnColor: #86E3CE;
 
 .headersBox {
   position: absolute;
   right: 20px;
+
+  .headerBtn {
+    background-color: @amsColor;
+    border: none;
+    color: #FFF;
+
+    &:hover {
+      color: @tfnColor  !important;
+      border: none;
+    }
+  }
 }
