@@ -3,6 +3,7 @@ import styles from './index.less'
 import { Button } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
+// import { Web3Button } from '@web3modal/react'
 interface HeaderPropsType {
   isMobile: boolean
 }
@@ -14,6 +15,7 @@ const Header = (props: HeaderPropsType) => {
         <UserOutlined className={styles.userIcon} />
       ) : (
         <Button className={styles.headerBtn}>Connect Wallet</Button>
+        // <Web3Button />
       )}
     </div>
   )

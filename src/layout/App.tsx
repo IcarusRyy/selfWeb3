@@ -5,7 +5,7 @@ import { Layout } from 'antd'
 import Headers from '@/page/header'
 import styles from './app.less'
 import MyMenu from './menu'
-import { useSize } from 'ahooks'
+import useSize from '@/share/ahooks/useSize'
 const { Header, Content } = Layout
 function App() {
   const element = useRoutes(routes)
