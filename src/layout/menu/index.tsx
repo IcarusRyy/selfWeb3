@@ -2,6 +2,8 @@ import { Menu } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styles from './index.less'
+import { useWeb3Modal } from '@web3modal/react'
+import { useAccount } from 'wagmi'
 interface MyMenuProps {
   routes: any[]
   isMobile: boolean
@@ -12,14 +14,18 @@ const MyMenu = (props: MyMenuProps) => {
   const [selectKey, setSelectKey] = useState<string[]>()
   const navigate = useNavigate()
   const location = useLocation()
-
+  const { isOpen, open } = useWeb3Modal()
+  const { address, isConnected } = useAccount()
   const items = routes
     .filter(item => item.isMenu)
     .map(item => ({
       key: item.key,
       label: item.key,
     }))
-  const handleOnClick = (data: any) => {
+  const handleOnClick = async (data: any) => {
+    if (!isConnected) {
+      return open()
+    }
     navigate(data.key)
   }
   const handleSelectKeys = (pathname: string) => {
