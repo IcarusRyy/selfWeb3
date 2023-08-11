@@ -6,10 +6,16 @@ import { SwapOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import ToBox from '@/share/components/toBox'
 import BottomBox from '@/share/components/bottomBox'
+import { useAccount } from 'wagmi'
 
 const DepositPage = () => {
+  const { address, isConnected } = useAccount()
+
   const navigate = useNavigate()
   const handleToWithDrawPage = () => {
+    if (!isConnected) {
+      return open()
+    }
     navigate('/withdraw')
   }
   return (
