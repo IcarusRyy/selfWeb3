@@ -1,16 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './index.less'
-import { Button, Input } from 'antd'
+import { Button } from 'antd'
 import classNames from 'classnames'
 import { SwapOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import ToBox from '@/share/components/toBox'
 import BottomBox from '@/share/components/bottomBox'
-import { useAccount } from 'wagmi'
+import { useAccount, useBalance, useNetwork, useSwitchNetwork } from 'wagmi'
+import { getChainIcon } from '@/share/utils'
+import FromBox from '@/share/components/fromBox'
 
 const DepositPage = () => {
   const { address, isConnected } = useAccount()
-
+  const { chain } = useNetwork()
+  const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
+  const { data, refetch } = useBalance({
+    address,
+    watch: true,
+  })
+  // const [chainIcon, setChainIcon] = useState<string>('')
+  // 获取区块链列表icon
+  const handleIcon = (id: number) => {
+    const res = getChainIcon(id)
+    // setChainIcon(res || '')
+  }
+  useEffect(() => {
+    if (chain?.id) {
+      handleIcon(chain.id)
+      refetch()
+    }
+  }, [chain?.id])
   const navigate = useNavigate()
   const handleToWithDrawPage = () => {
     if (!isConnected) {
@@ -18,6 +37,11 @@ const DepositPage = () => {
     }
     navigate('/withdraw')
   }
+
+  const handleChangeChain = (id: number) => {
+    switchNetwork?.(id)
+  }
+
   return (
     <div className={'flexcc h100'}>
       <div className={styles.depositBox}>
@@ -25,19 +49,12 @@ const DepositPage = () => {
           <h1>Deposit</h1>
           <p>Transfer BNB from BNB Smart Chain Testnet to your opBNB Testnet account.</p>
         </div>
-        <div className={styles.fromBox}>
-          <div className={styles.fromTitleBox}>
-            <span className={styles.fromLeftTitle}>From BNB Smart Chain Testnet</span>
-            <span className={styles.fromRightTitle}>Faucet</span>
-          </div>
-          <div className={styles.fromAmountBox}>
-            <div>Amount</div>
-            <div className="mt10">
-              <Input className={styles.fromInput} />
-            </div>
-            <div className="mt10">Balance: 0 BNB</div>
-          </div>
-        </div>
+        <FromBox
+          data={data}
+          chain={chain}
+          chainList={chains}
+          handleChangeChain={handleChangeChain}
+        />
         <div className={classNames(styles.swapBox)}>
           <SwapOutlined className={styles.swapIcon} onClick={handleToWithDrawPage} />
         </div>
