@@ -1,0 +1,53 @@
+@fontColor: #FFF;
+@secondFontColor: hsla(205, 13%, 66%, 1);
+
+.withDrawBox {
+  width: 33%;
+  min-width: 22rem;
+  height: 90%;
+  background-color: @tfnColor;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  color: @amsColor;
+
+  padding: 15px 24px;
+  overflow: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .titleBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    h1 {
+      margin: 0;
+    }
+
+    p {
+      color: @fontColor;
+    }
+  }
+
+  .swapBox {
+    text-align: center;
+    margin-top: 1.5rem;
+
+    .swapIcon {
+      background-color: @mainColor;
+
+      color: @amsColor;
+      transform: rotate(90deg);
+      font-size: 3rem;
+      color: #FFF;
+      border-radius: 50%;
+    }
+  }
+
+
+}

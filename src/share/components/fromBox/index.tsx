@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './index.less'
 import { Input, Select } from 'antd'
 interface FromBoxPropsType {
+  title: string
   chainList: any[]
   chain: any
   data: any
@@ -10,7 +11,7 @@ interface FromBoxPropsType {
 const { Option } = Select
 
 const FromBox = (props: FromBoxPropsType) => {
-  const { chainList, chain, handleChangeChain, data } = props
+  const { chainList, chain, handleChangeChain, data, title } = props
 
   const selectAfter = (
     <Select value={chain?.id} onSelect={handleChangeChain}>
@@ -26,7 +27,7 @@ const FromBox = (props: FromBoxPropsType) => {
   return (
     <div className={styles.fromBox}>
       <div className={styles.fromTitleBox}>
-        <span className={styles.fromLeftTitle}>From BNB Smart Chain Testnet</span>
+        <span className={styles.fromLeftTitle}>{title}</span>
         <span className={styles.fromRightTitle}>Faucet</span>
       </div>
       <div className={styles.fromAmountBox}>

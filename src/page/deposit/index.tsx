@@ -50,6 +50,7 @@ const DepositPage = () => {
           <p>Transfer BNB from BNB Smart Chain Testnet to your opBNB Testnet account.</p>
         </div>
         <FromBox
+          title="From BNB Smart Chain Testnet"
           data={data}
           chain={chain}
           chainList={chains}
