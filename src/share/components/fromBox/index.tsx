@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './index.less'
-import { Input, Select } from 'antd'
+import { Dropdown, Input, MenuProps } from 'antd'
+import { getChainIcon } from '@/share/utils'
+import MyIcon from '../myIcon'
 interface FromBoxPropsType {
   title: string
   chainList: any[]
@@ -8,22 +10,15 @@ interface FromBoxPropsType {
   data: any
   handleChangeChain: (id: number) => void
 }
-const { Option } = Select
 
 const FromBox = (props: FromBoxPropsType) => {
   const { chainList, chain, handleChangeChain, data, title } = props
-
-  const selectAfter = (
-    <Select value={chain?.id} onSelect={handleChangeChain}>
-      {chainList.map(item => (
-        <Option key={item.id} value={item.id}>
-          {/* {!!chainIcon && <img src={chainIcon} alt="" />} */}
-          {item.name}
-        </Option>
-      ))}
-    </Select>
-  )
-
+  const items: MenuProps['items'] = chainList.map(item => ({
+    label: <span>{item.name}</span>,
+    key: item.id,
+    icon: <img src={`${getChainIcon(item.id)}`} />,
+    onClick: item => handleChangeChain(Number(item.key)),
+  }))
   return (
     <div className={styles.fromBox}>
       <div className={styles.fromTitleBox}>
@@ -33,7 +28,24 @@ const FromBox = (props: FromBoxPropsType) => {
       <div className={styles.fromAmountBox}>
         <div>Amount</div>
         <div className="mt10">
-          <Input className={styles.fromInput} addonAfter={selectAfter} />
+          <Input
+            className={styles.fromInput}
+            addonAfter={
+              <div id="inputBoxId">
+                <Dropdown
+                  menu={{ items }}
+                  trigger={['click']}
+                  getPopupContainer={() => document.getElementById('inputBoxId') || document.body}
+                  placement="bottom"
+                >
+                  <div className={styles.downMenuOption}>
+                    <img src={`${getChainIcon(chain.id)}`} />
+                    <span className={'ml5'}>{chain.name}</span>
+                  </div>
+                </Dropdown>
+              </div>
+            }
+          />
         </div>
         <div className="mt10">Balance: {data?.formatted} BNB</div>
       </div>

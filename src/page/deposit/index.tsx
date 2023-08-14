@@ -17,6 +17,7 @@ const DepositPage = () => {
   const { data, refetch } = useBalance({
     address,
     watch: true,
+    enabled: false,
   })
   // const [chainIcon, setChainIcon] = useState<string>('')
   // 获取区块链列表icon

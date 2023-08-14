@@ -1,0 +1,16 @@
+{
+  "id": "4210356",
+  "name": "selfWeb3",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "14095323",
+      "name": "区块链",
+      "font_class": "qukuailian",
+      "unicode": "e790",
+      "unicode_decimal": 59280
+    }
+  ]
+}
