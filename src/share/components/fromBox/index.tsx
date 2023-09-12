@@ -39,8 +39,8 @@ const FromBox = (props: FromBoxPropsType) => {
                   placement="bottom"
                 >
                   <div className={styles.downMenuOption}>
-                    <img src={`${getChainIcon(chain.id)}`} />
-                    <span className={'ml5'}>{chain.name}</span>
+                    {/* {!!chain.id && <img src={`${getChainIcon(chain.id)}`} />} */}
+                    {/* <span className={'ml5'}>{chain.name}</span> */}
                   </div>
                 </Dropdown>
               </div>

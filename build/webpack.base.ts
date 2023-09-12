@@ -96,7 +96,9 @@ const baseConfig: Configuration = {
                 globalVars: {
                   mainColor: '#09a29d',
                   amsColor: 'rgb(235, 92, 32)',
-                  tfnColor: '#86E3CE',
+                  // tfnColor: '#86E3CE',
+                  tfnColor: '#80D1C8',
+                  qtColor: '#FFD4A9',
                 },
               },
             },

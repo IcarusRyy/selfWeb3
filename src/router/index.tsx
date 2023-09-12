@@ -2,12 +2,13 @@ import { Navigate, RouteObject } from 'react-router-dom'
 import DepositPage from '@/page/deposit'
 import WithdrawPage from '@/page/withdraw'
 import HistoryPage from '@/page/history'
+import HomePage from '@/page/home'
 type MyRoute = RouteObject & { isMenu?: boolean; key?: string }
 export const routes: MyRoute[] = [
   // 对精确匹配"/"，跳转deposit页面
   {
     path: '/',
-    element: <DepositPage />,
+    element: <HomePage />,
   },
   // 精确匹配"/deposit"，跳转deposit页面
   {

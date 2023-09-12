@@ -5,6 +5,7 @@ import { UserOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 import { useWeb3Modal } from '@web3modal/react'
 import { Web3Button } from '@web3modal/react'
+import { useNavigate } from 'react-router-dom'
 interface HeaderPropsType {
   isMobile: boolean
 }
@@ -12,6 +13,7 @@ interface HeaderPropsType {
 const Header = (props: HeaderPropsType) => {
   const { isMobile } = props
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
+  const navigate = useNavigate()
   const handleConnectWallet = async () => {
     try {
       // const provider = await web3Modal.connect()
@@ -23,6 +25,7 @@ const Header = (props: HeaderPropsType) => {
   }
   return (
     <div className={classNames(styles.headersBox, isMobile && styles.userIconBox)}>
+      <Button onClick={() => navigate('/')}>home</Button>
       {isMobile ? (
         <UserOutlined className={styles.userIcon} />
       ) : (
