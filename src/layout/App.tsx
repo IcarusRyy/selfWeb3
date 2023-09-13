@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
-import { Route, Routes, useLocation, useNavigate, useRoutes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import { routes } from '../router'
-import { Layout } from 'antd'
+import { Layout, Spin } from 'antd'
 import Headers from '@/page/header'
 import styles from './app.less'
 import MyMenu from './menu'
@@ -18,54 +18,42 @@ function App() {
   const size = useSize(document.body)
   const isMobile = size?.width ? size.width <= 768 : window.innerWidth <= 768
   useEffect(() => {
-    checkoutConnect()
-  }, [isDisconnected, location.pathname])
-  const checkoutConnect = useCallback(() => {
-    if (location.pathname !== '/' && isDisconnected) {
-      return navigate('/')
+    if (!isConnected) {
+      navigate('/')
     }
-  }, [isDisconnected, location.pathname])
-
-  if (location.pathname === '/') {
-    return (
-      <div>
-        <div>{element}</div>
-        <Web3Modal
-          projectId={WALLETCONNECTPROJECTID}
-          ethereumClient={ethereumClient}
-          themeVariables={{
-            '--w3m-font-family': 'Roboto, sans-serif',
-            // '--w3m-accent-color': '#F5841F',
-            '--w3m-accent-color': 'rgb(235, 92, 32)',
-            // '--w3m-accent-color': '#FFD4A9',
-            '--w3m-background-color': '#09a29d',
-            // '--w3m-logo-image-url': 'https://selfweb3.refitor.com/favicon.ico',
-          }}
-        />
-      </div>
-    )
-  }
-
+  }, [isConnected])
   return (
     <>
-      <Layout className={`layout  ${styles.layoutBox}`}>
-        <Header className={styles.headerBox}>
-          <MyMenu routes={routes} isMobile={isMobile} />
-          <Headers isMobile={isMobile} />
-        </Header>
-        <Content className={` ${styles.contentBox}`}>{element}</Content>
-        <Web3Modal
-          projectId={WALLETCONNECTPROJECTID}
-          ethereumClient={ethereumClient}
-          themeVariables={{
-            '--w3m-font-family': 'Roboto, sans-serif',
-            // '--w3m-accent-color': '#F5841F',
-            '--w3m-accent-color': 'rgb(235, 92, 32)',
-            '--w3m-background-color': '#09a29d',
-            // '--w3m-logo-image-url': 'https://selfweb3.refitor.com/favicon.ico',
-          }}
-        />
-      </Layout>
+      {!isConnected || location.pathname === '/' ? (
+        <>{element}</>
+      ) : (
+        <>
+          <Spin
+            className={styles.spinning}
+            style={{ display: !isConnected ? undefined : 'none' }}
+            spinning={!isConnected}
+            tip="正在加载……"
+          />
+          <Layout className={`layout  ${styles.layoutBox}`}>
+            <Header className={styles.headerBox}>
+              <MyMenu routes={routes} isMobile={isMobile} />
+              <Headers isMobile={isMobile} />
+            </Header>
+            <Content className={` ${styles.contentBox}`}>{element}</Content>
+          </Layout>
+        </>
+      )}
+      <Web3Modal
+        projectId={WALLETCONNECTPROJECTID}
+        ethereumClient={ethereumClient}
+        themeVariables={{
+          '--w3m-font-family': 'Roboto, sans-serif',
+          // '--w3m-accent-color': '#F5841F',
+          '--w3m-accent-color': 'rgb(235, 92, 32)',
+          '--w3m-background-color': '#09a29d',
+          // '--w3m-logo-image-url': 'https://selfweb3.refitor.com/favicon.ico',
+        }}
+      />
     </>
   )
 }

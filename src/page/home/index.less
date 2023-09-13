@@ -59,6 +59,11 @@
       flex-wrap: wrap;
       gap: 20px;
 
+      @media (max-width: 768px) {
+        padding-bottom: 50px;
+
+      }
+
       .card {
         border: none;
         border-radius: 10px;
@@ -67,12 +72,14 @@
         text-align: left;
         text-decoration: none;
         transition: color .15s ease, border-color .15s ease;
+
+        @media (max-width: 768px) {
+          max-width: 440px;
+
+        }
       }
 
-      @media (max-width: 768px) {
-        max-width: 440px;
 
-      }
     }
   }
 
