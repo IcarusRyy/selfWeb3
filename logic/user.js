@@ -1,5 +1,6 @@
 // 处理所有用户相关的业务逻辑, 包括Load, Register, Recover, Reset等
 
+import Web3 from "web3";
 import * as selfweb3 from './index.js';
 
 export function Init(walletAddress, inputWeb2Key, callback) {
@@ -7,7 +8,6 @@ export function Init(walletAddress, inputWeb2Key, callback) {
 }
 
 export function Registered(walletAddress, selfAddress, callback) {
-    console.log(walletAddress, callback)
     selfweb3.GetWeb3().Web3Execute("call", "Registered", walletAddress, 0, [selfAddress], function (loadResult) {
         selfweb3.ShowMsg('', 'Registered', 'web3 contract call successed: ', loadResult);
         if (callback !== undefined && callback !== null) callback(loadResult, true);//(loadResult['registered'], true);
@@ -54,18 +54,18 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
         queryMap['public'] = JSON.parse(wasmResponse)['Data'];
         selfweb3.SetProps('wasmPublic', JSON.parse(wasmResponse)['Data']);
         selfweb3.httpGet("/api/datas/load", queryMap, function(response) {
-            if (response.data['Error'] !== '' && response.data['Error'] !== null && response.data['Error'] !== undefined) {
-                selfweb3.ShowMsg('error', 'init web2 service failed: ', response.data['Error']);
+            if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
+                selfweb3.ShowMsg('error', 'init web2 service failed: ', response['Error']);
             } else {
-                let web2Response = response.data['Data'];
+                let web2Response = response['Data'];
                 WasmInit(walletAddress, inputWeb2Key, web2Response['Web2NetPublic'], web2Response['Web2Data'], function(initResponse) {
                     let wasmResp = {};
-                    wasmResp['data'] = JSON.parse(initResponse);
-                    if (wasmResp.data['Error'] !== '' && wasmResp.data['Error'] !== null && wasmResp.data['Error'] !== undefined) {
-                        selfweb3.wasmCallback("WasmInit", response.data['Error'], false);
+                    wasmResp = JSON.parse(initResponse);
+                    if (wasmResp['Error'] !== '' && wasmResp['Error'] !== null && wasmResp['Error'] !== undefined) {
+                        selfweb3.wasmCallback("WasmInit", response['Error'], false);
                     } else {
-                        if (callback !== undefined && callback !== null) callback(wasmResp.data['Data'], web2Response['Web2Address']);
-                        // initWeb3(flow, walletAddress, wasmResp.data['Data'], web2Response['Web2Address'], callback);
+                        if (callback !== undefined && callback !== null) callback(wasmResp['Data'], web2Response['Web2Address']);
+                        // initWeb3(flow, walletAddress, wasmResp['Data'], web2Response['Web2Address'], callback);
                     }
                 });
             }
@@ -75,20 +75,19 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
 
 export function Register(selfAddress, walletAddress, recoverID, callback) {
     // wasm
-    let response = {};
     let userID = walletAddress;
     selfweb3.ShowWaitting(true);
-    selfweb3.wasm.WasmRegister(userID, recoverID, function(wasmResponse) {
-        response['data'] = JSON.parse(wasmResponse);
-        if (response.data['Error'] !== '' && response.data['Error'] !== null && response.data['Error'] !== undefined) {
-            selfweb3.wasmCallback("WasmRegister", response.data['Error'], false);
+    WasmRegister(userID, recoverID, function(wasmResponse) {
+        let response = JSON.parse(wasmResponse);
+        if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
+            selfweb3.wasmCallback("WasmRegister", response['Error'], false);
         } else {
             selfweb3.wasmCallback("Register");
             var registParams = [];
             registParams.push(selfAddress);
-            registParams.push(Web3.utils.asciiToHex(response.data['Data']['RecoverID']));
-            registParams.push(Web3.utils.asciiToHex(response.data['Data']['Web3Key']));
-            registParams.push(Web3.utils.asciiToHex(response.data['Data']['Web3Public']));
+            registParams.push(Web3.utils.asciiToHex(response['Data']['RecoverID']));
+            registParams.push(Web3.utils.asciiToHex(response['Data']['Web3Key']));
+            registParams.push(Web3.utils.asciiToHex(response['Data']['Web3Public']));
             // 流程: contract.Register ===> webAuthnRegister ===> /api/datas/store ===> TOTP QRCode
             selfweb3.GetWeb3().Web3Execute("send", "Register", walletAddress, 0, registParams, function (result) {
                 selfweb3.ShowWaitting(false);
@@ -96,13 +95,13 @@ export function Register(selfAddress, walletAddress, recoverID, callback) {
                 // webAuthn register
                 // self.$parent.getSelf().$refs.webauthn.webRegister(userID, function(){
                 //     self.$parent.getSelf().enableSpin(false);
-                //     self.storeWeb2Data(userID, recoverID, response.data['Data']['Web2Data'], response.data['Data']['QRCode']);
+                //     self.storeWeb2Data(userID, recoverID, response['Data']['Web2Data'], response['Data']['QRCode']);
                 // }, function() {
                 //     self.$parent.getSelf().enableSpin(false);
                 //     self.$Message.error('webAuthn register failed');
                 // });
 
-                storeWeb2Data(userID, recoverID, response.data['Data']['Web2Data'], response.data['Data']['QRCode'], callback);
+                storeWeb2Data(userID, recoverID, response['Data']['Web2Data'], response['Data']['QRCode'], callback);
             }, function (err) {
                 selfweb3.ShowWaitting(false);
                 selfweb3.ShowMsg('error', 'Register', 'web3 contract: register failed: ', walletAddress);
@@ -118,10 +117,10 @@ function storeWeb2Data(userID, recoverID, web2Data, qrcode, callback) {
     formdata.append("params", web2Data);
     formdata.append("recoverID", recoverID);
     selfweb3.httpPost("/api/datas/store", formdata, function(storeResponse) {
-        if (storeResponse.data['Error'] == '') {
+        if (storeResponse['Error'] == '') {
             if (callback !== undefined && callback !== null) callback(qrcode);
         } else {
-            selfweb3.ShowMsg('error', 'Register', 'store web2Data failed: ', storeResponse.data['Error']);
+            selfweb3.ShowMsg('error', 'Register', 'store web2Data failed: ', storeResponse['Error']);
         }
     })
 }
