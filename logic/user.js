@@ -73,6 +73,16 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
     });
 }
 
+/* example
+    import * as selfweb3 from '../logic/index.js';
+    selfweb3.GetUser().Register(selfAddress, walletAddress, email, function(qrcode){
+        self.showQRcode(qrcode);
+        setTimeout(function() {
+            self.qrcodeUrl = '';
+            window.location.reload();
+        }, 60000);
+    })
+*/
 export function Register(selfAddress, walletAddress, recoverID, callback) {
     // wasm
     let userID = walletAddress;
