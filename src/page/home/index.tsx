@@ -47,29 +47,24 @@ const HomePage = () => {
   }, [isConnected, connector])
   const errorCb = (err: any, flow: any, msg: string, param: any) =>
     console.log({ flow: flow, error: err === 'error', msg: msg, param: param })
-  const successCb = () => {
-    GetUser().Init(address, '', initUserSuccessCb)
-  }
+
   // user初始化成功回调
-  const initUserSuccessCb = (selfAddress: string, web2Address: string) => {
-    GetUser().Registered(address, selfAddress, (registered: boolean, bound: boolean) => {
-      if (!!registered) {
-        if (!!bound) {
-          // 已注册, 钱包地址一致, 开始加载用户私有信息
-          GetUser().Load(address, selfAddress, () => {
-            console.log(
-              '// 已注册, 钱包地址一致, 用拿到的地址信息初始化profile(第一个卡片的内容), 用户加载流程完成',
-            )
-          })
-        } else {
-          console.log(
-            '// 已注册, 但钱包地址不一致, 弹出modal框提示是否重新绑定钱包, 启动钱包重新绑定流程',
-          )
-        }
+  const initUserSuccessCb = async (selfAddress: string, web2Address: string) => {
+      // check registered
+      const { registered, bound } = await GetUser().Registered(address, selfAddress);
+      if (registered === true) {
+          if (bound === true) {
+              // 已注册, 钱包地址一致, 开始加载用户私有信息
+              if (await GetUser().Load(address, selfAddress) === true) {
+                // 已注册, 钱包地址一致, 用拿到的地址信息初始化profile(第一个卡片的内容), 用户加载流程完成
+                console.log('selfAddress: ', selfAddress, 'web2Address: ', web2Address, 'contractAddress: ', GetWeb3().ContractAddress)
+              }
+          } else {
+              console.log('// 已注册, 但钱包地址不一致, 弹出modal框提示是否重新绑定钱包, 启动钱包重新绑定流程')
+          }
       } else {
-        console.log('// 尚未注册')
+          console.log('// 尚未注册')
       }
-    })
   }
   // user初始化失败回调
   const initUserErrorCb = (error: any) => {
@@ -85,7 +80,9 @@ const HomePage = () => {
     // console.log(connector, 'connector')
     const currentProvider = await connector?.options.getProvider()
     console.log(currentProvider, 'currentProvider')
-    Init(GetWeb3().ContractSelfWeb3, currentProvider, errorCb, successCb)
+    const bInit = await Init(GetWeb3().ContractSelfWeb3, currentProvider, errorCb)
+    if (!!bInit) GetUser().Init(address, '', initUserSuccessCb, initUserErrorCb)
+
   }, [address, connector])
   const handleClickCard = useCallback(
     (pathname: string) => {

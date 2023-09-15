@@ -1,6 +1,6 @@
 // 处理所有用户相关的业务逻辑, 包括Load, Register, Recover, Reset等
 "use strict"
-import Web3 from "web3";
+// import Web3 from "web3";
 import * as verify3 from './verify.js';
 import * as selfweb3 from './index.js';
 
@@ -13,48 +13,54 @@ export const Flow_Registered = "Registered";
 export const Flow_StoreSelfData = "StoreSelfData";
 
 // callback(selfAddress, web2Address)
-export function Init(walletAddress, inputWeb2Key, callback) {
-    initBackend(Flow_Init, walletAddress, inputWeb2Key, callback);
+export function Init(walletAddress, inputWeb2Key, callback, failed) {
+    initBackend(Flow_Init, walletAddress, inputWeb2Key, callback, failed);
 }
 
 // callback(registered, bound)
-export function Registered(walletAddress, selfAddress, callback) {
-    selfweb3.GetWeb3().Execute("call", "Registered", walletAddress, 0, [selfAddress], function (loadResult) {
+export async function Registered(walletAddress, selfAddress) {
+    let bound = false;
+    let registered = false;
+    await selfweb3.GetWeb3().Execute("call", "Registered", walletAddress, 0, [selfAddress], function (loadResult) {
         selfweb3.ShowMsg('', Flow_Registered, 'web3 Registered successed', '');
-        if (callback !== undefined && callback !== null) callback(loadResult, true);
+        registered = loadResult;
+        bound = true;
     }, function (err) {
         selfweb3.ShowMsg('error', Flow_Registered, 'web3 contract call failed', err);
     });
+    return { registered, bound };
 }
 
 // callback()
-export function Load(walletAddress, selfAddress, callback) {
-    initWeb3(Flow_Load, walletAddress, selfAddress, callback);
+export async function Load(walletAddress, selfAddress) {
+    return await initWeb3(Flow_Load, walletAddress, selfAddress);
 }
 
-function initWeb3(flow, walletAddress, selfAddress, callback) {
+async function initWeb3(flow, walletAddress, selfAddress) {
+    let initResult = false;
     let message = 'SelfWeb3 Init: ' + (new Date()).getTime();
-    selfweb3.GetWeb3().Sign(walletAddress, message, function(sig) {
+    selfweb3.GetWeb3().Sign(walletAddress, message, async function(sig) {
         var loadParams = [];
         loadParams.push(selfAddress);
         loadParams.push(sig);
         loadParams.push(Web3.utils.asciiToHex(message));
-        selfweb3.GetWeb3().Execute("call", "Load", walletAddress, 0, loadParams, function (loadResult) {
+        await selfweb3.GetWeb3().Execute("call", "Load", walletAddress, 0, loadParams, function (loadResult) {
             let recoverID = Web3.utils.hexToAscii(loadResult['recoverID']);
             let web3Public = Web3.utils.hexToAscii(loadResult['web3Public']);
             selfweb3.SetProps("recoverID", recoverID);
             selfweb3.SetProps("web3Public", web3Public);
             selfweb3.ShowMsg('', flow, 'user load successed', [recoverID, web3Public]);
-            if (callback !== undefined && callback !== null) callback();
+            initResult = true;
         }, function (err) {
             selfweb3.ShowMsg('error', flow, 'sign message failed', err);
         });
     }, function(err) {
         selfweb3.ShowMsg('error', flow, 'sign message failed', err);
     })
+    return initResult;
 }
 
-function initBackend(flow, walletAddress, inputWeb2Key, callback) {
+function initBackend(flow, walletAddress, inputWeb2Key, callback, failed) {
     let userID = walletAddress;
     WasmPublic(function(wasmResponse) {
         let queryMap = {};
@@ -63,9 +69,10 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
         queryMap['params'] = "initWeb2";
         queryMap['public'] = JSON.parse(wasmResponse)['Data'];
         selfweb3.SetProps('wasmPublic', JSON.parse(wasmResponse)['Data']);
-        selfweb3.httpGet("/api/datas/load", queryMap, function(response) {
+        selfweb3.httpGet(selfweb3.GetProps('ApiPrefix') + "/api/datas/load", queryMap, function(response) {
             if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
                 selfweb3.ShowMsg('error', flow, 'init web2 server failed', response['Error']);
+                if (failed !== undefined && failed !== null) callback(response['Error']);
             } else {
                 let web2Response = response['Data'];
                 selfweb3.ShowMsg("", flow, "inint web2 server successed", web2Response);
@@ -73,7 +80,8 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
                     let wasmResp = {};
                     wasmResp = JSON.parse(initResponse);
                     if (wasmResp['Error'] !== '' && wasmResp['Error'] !== null && wasmResp['Error'] !== undefined) {
-                        selfweb3.ShowMsg("error", flow, "inint web2 server failed", response['Error']);
+                        selfweb3.ShowMsg("error", flow, "inint web2 server failed", wasmResp['Error']);
+                        if (failed !== undefined && failed !== null) callback(wasmResp['Error']);
                     } else {
                         selfweb3.ShowMsg("", flow, "inint wasm successed", [wasmResp['Data'], web2Response['Web2Address']]);
                         if (callback !== undefined && callback !== null) callback(wasmResp['Data'], web2Response['Web2Address']);
@@ -82,6 +90,7 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
             }
         }, function(err) {
             selfweb3.ShowMsg("error", flow, "inint web2 server failed", err);
+            if (failed !== undefined && failed !== null) callback(err);
         })
     });
 }
@@ -136,7 +145,7 @@ export function StoreSelfData(userID, recoverID, web2Data, callback) {
     formdata.append("kind", 'web2Data');
     formdata.append("params", web2Data);
     formdata.append("recoverID", recoverID);
-    selfweb3.httpPost("/api/datas/store", formdata, function(storeResponse) {
+    selfweb3.httpPost(selfweb3.GetProps('ApiPrefix') + "/api/datas/store", formdata, function(storeResponse) {
         if (storeResponse['Error'] == '') {
             if (callback !== undefined && callback !== null) callback();
         } else {
@@ -199,7 +208,7 @@ function packRelateVerifyParams(flow, walletAddress, action, verifyParams, callb
     queryMap['kind'] = 'relateVerify';
     queryMap['nonce'] = verifyParams['nonce'];
     queryMap['userID'] = walletAddress;
-    selfweb3.httpGet("/api/datas/load", queryMap, function(response) {
+    selfweb3.httpGet(selfweb3.GetProps('ApiPrefix') + "/api/datas/load", queryMap, function(response) {
         if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
             selfweb3.ShowMsg('error', flow, 'load datas from web2 server failed', response['Error']);
         } else {

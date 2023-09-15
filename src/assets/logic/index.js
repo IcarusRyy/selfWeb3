@@ -64,16 +64,26 @@ export function SetProps(key, val) {
 }
 
 // callback: function()
-export function Init(contractName, provider, showMsg, callback) {
+export async function Init(contractName, provider, showMsg) {
     UnInit();
+    Props['ApiPrefix'] = "https://debug.refitor.com"
     if (showMsg !== null && showMsg !== undefined) ShowMsg = showMsg;
 
+    let bInit = false;
     const go = new Go();
-    WebAssembly.instantiateStreaming(fetch("/selfweb3.wasm"), go.importObject)
-    .then(function(result) {
+    await WebAssembly.instantiateStreaming(fetch("selfweb3.wasm"), go.importObject)
+    .then(async function(result) {
+        console.log('wasm: ', result)
         go.run(result.instance);
-        web3.Init(contractName, provider, callback)
+        const err = await web3.Init(contractName, provider);
+        if (err !== '') {
+            showMsg('error', "Init", "init web3 failed", err);
+            return;
+        }
+        bInit = true;
     })
+    showMsg('', "Init", "init web3 successed", '');
+    return bInit;
 }
 
 export function UnInit() {

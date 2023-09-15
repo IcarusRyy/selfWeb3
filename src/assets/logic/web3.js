@@ -1,11 +1,219 @@
-import * as Web3 from "web3";
-import selfWeb3ABI from './abi/SelfWeb3.json';
+"use strict";
+// import Web3 from "web3";
+// import selfWeb3ABI from './abi/SelfWeb3.json';
 // import selfVaultABI from './abi/SelfVault.json';
 
 export let web3 = null;
 export let networkId ='';
 export let ContractABI = '';
 export let ContractAddress = '';
+
+const selfWeb3ABI = `[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "web2Address",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "selfAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "message",
+				"type": "bytes"
+			}
+		],
+		"name": "Load",
+		"outputs": [
+			{
+				"internalType": "bytes",
+				"name": "recoverID",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "web3Public",
+				"type": "bytes"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "Meta",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "registTotal",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "selfAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "wallet",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes",
+				"name": "vparam",
+				"type": "bytes"
+			}
+		],
+		"name": "Rebind",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "selfAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes",
+				"name": "recoverID",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "web3Key",
+				"type": "bytes"
+			},
+			{
+				"internalType": "bytes",
+				"name": "web3Public",
+				"type": "bytes"
+			}
+		],
+		"name": "Register",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "selfAddress",
+				"type": "address"
+			}
+		],
+		"name": "Registered",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "registered",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "selfAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes",
+				"name": "vparam",
+				"type": "bytes"
+			}
+		],
+		"name": "Web3Key",
+		"outputs": [
+			{
+				"internalType": "bytes",
+				"name": "web3Key",
+				"type": "bytes"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]`
 
 export const ContractSelfWeb3 = "SelfWeb3";
 const contracts = {
@@ -17,25 +225,25 @@ const contracts = {
 }
 export function SetContract(name) {
     ContractAddress = contracts[name][networkId];
-    if (name === ContractSelfWeb3) ContractABI = selfWeb3ABI;
+    if (name === ContractSelfWeb3) ContractABI = JSON.parse(selfWeb3ABI);
 }
 
 /*
 example:
     Web3Init(this.ShowMsg, web3Provider);
 */
-export async function Init(contractName, provider, callback, failed) {
+export async function Init(contractName, provider) {
     const vweb3 = new Web3(provider);
     const vnetworkId = await vweb3.eth.net.getId();
     console.log('wallet connect callback: ', vnetworkId, vweb3, provider);
     if (contracts[contractName][vnetworkId] === undefined) {
-        if (failed !== null && failed !== undefined) failed('Unsupport network, currently supported chainId list: ' + Object.keys(contracts[contractName]));
-        return;
+        // if (failed !== null && failed !== undefined) failed('Unsupport network, currently supported chainId list: ' + Object.keys(contracts[contractName]));
+        return 'Unsupport network, currently supported chainId list: ' + Object.keys(contracts[contractName]);
     }
     web3 = vweb3;
     networkId = vnetworkId;
     SetContract(contractName);
-    if (callback !== null && callback !== undefined) callback();
+    return '';
 }
 
 export function UnInit() {
@@ -67,7 +275,7 @@ export async function Execute(executeFunc, methodName, walletAddress, msgValue, 
     } else {
         sendObject = web3Func(...params);
     }
-    if (msgValue !== undefined && msgValue > 0) msgValue = Web3.utils.toBN(Web3.utils.toWei(msgValue + '', 'ether'));
+    if (msgValue !== undefined && msgValue > 0) msgValue = Web3.utils.toNumber(Web3.utils.toWei(msgValue + '', 'ether'));
 
     if (executeFunc === 'call') {
         await sendObject.call({ from: walletAddress }, function (error, result) {
