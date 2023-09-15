@@ -22,6 +22,7 @@ function App() {
       navigate('/')
     }
   }, [isConnected])
+  console.log(ethereumClient, 'ethereumClient')
   return (
     <>
       {!isConnected || location.pathname === '/' ? (
@@ -51,7 +52,7 @@ function App() {
           // '--w3m-accent-color': '#F5841F',
           '--w3m-accent-color': 'rgb(235, 92, 32)',
           '--w3m-background-color': '#09a29d',
-          // '--w3m-logo-image-url': 'https://selfweb3.refitor.com/favicon.ico',
+          '--w3m-logo-image-url': '',
         }}
       />
     </>

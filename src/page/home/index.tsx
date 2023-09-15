@@ -4,9 +4,10 @@ import styles from './index.less'
 import classNames from 'classnames'
 import { useNavigate } from 'react-router-dom'
 import { Web3Button, useWeb3Modal } from '@web3modal/react'
-import { Card } from 'antd'
+import { Button, Card } from 'antd'
 import { useAccount } from 'wagmi'
-
+import { Init, GetWeb3, GetUser } from '@/assets/logic/index'
+import { ethereumClient } from '@/assets/constants'
 // // prefetch
 // const PreFetchDemo = lazy(
 //   () =>
@@ -29,26 +30,71 @@ import { useAccount } from 'wagmi'
 const { Meta } = Card
 const HomePage = () => {
   const [nowBtn, setNowBtn] = useState<string>('left')
+  const [hasInfo, setHasInfo] = useState<any>({})
   const navigate = useNavigate()
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
-  const { isDisconnected } = useAccount()
+  const { address, connector, isConnected, isDisconnected } = useAccount()
   const handleChangeBtn = useCallback((e: any, nowBtn: 'left' | 'right') => {
     e.preventDefault()
     e.stopPropagation()
     setNowBtn(nowBtn)
     navigate('/deposit')
   }, [])
-  // useEffect(() => {
-  //   console.log(Web3Button)
-  // })
-
+  useEffect(() => {
+    if (isConnected && !!connector) {
+      checkWalletForUser()
+    }
+  }, [isConnected, connector])
+  const errorCb = (err: any, flow: any, msg: string, param: any) =>
+    console.log({ flow: flow, error: err === 'error', msg: msg, param: param })
+  const successCb = () => {
+    GetUser().Init(address, '', initUserSuccessCb)
+  }
+  // user初始化成功回调
+  const initUserSuccessCb = (selfAddress: string, web2Address: string) => {
+    GetUser().Registered(address, selfAddress, (registered: boolean, bound: boolean) => {
+      if (!!registered) {
+        if (!!bound) {
+          // 已注册, 钱包地址一致, 开始加载用户私有信息
+          GetUser().Load(address, selfAddress, () => {
+            console.log(
+              '// 已注册, 钱包地址一致, 用拿到的地址信息初始化profile(第一个卡片的内容), 用户加载流程完成',
+            )
+          })
+        } else {
+          console.log(
+            '// 已注册, 但钱包地址不一致, 弹出modal框提示是否重新绑定钱包, 启动钱包重新绑定流程',
+          )
+        }
+      } else {
+        console.log('// 尚未注册')
+      }
+    })
+  }
+  // user初始化失败回调
+  const initUserErrorCb = (error: any) => {
+    console.log(
+      '// 已注册, 钱包地址一致, 但需要用户自行输入web2服务密钥解密私有数据, 弹出modal框提示用户输入web2服务密钥, 确认后重新走selfweb3.GetUser().Init流程',
+    )
+  }
+  const checkWalletForUser = useCallback(async () => {
+    // const res = Init(GetWeb3().ContractSelfWeb3)
+    // console.log(address, 'address')
+    // const currentProvider = ethereumClient.getAccount()
+    // console.log(currentProvider, 'current')
+    // console.log(connector, 'connector')
+    const currentProvider = await connector?.options.getProvider()
+    console.log(currentProvider, 'currentProvider')
+    Init(GetWeb3().ContractSelfWeb3, currentProvider, errorCb, successCb)
+  }, [address, connector])
   const handleClickCard = useCallback(
     (pathname: string) => {
-      if (isDisconnected) {
+      console.log(isConnected, 'isDis')
+      if (!isConnected) {
         return open()
       }
     },
-    [isDisconnected],
+    [isConnected],
   )
   return (
     <div className={styles.homeBox}>
@@ -60,6 +106,7 @@ const HomePage = () => {
           </p>
           <div className={styles.connect}>
             <Web3Button icon="hide" label="CONNECT" />
+            {!!hasInfo && <Button>信息</Button>}
           </div>
         </div>
         <div className={styles.cardBox}>
@@ -102,25 +149,6 @@ const HomePage = () => {
           </Card>
         </div>
       </div>
-      {/* <div onClick={e => handleChangeBtn(e, 'left')}>MINT</div> */}
-      {/* <div className={styles.box}>
-        <div className={styles.btnBox}>
-          <div
-            className={classNames(styles.leftBtn, nowBtn === 'left' && styles.nowBgc)}
-            onClick={e => handleChangeBtn(e, 'left')}
-          >
-            MINT
-          </div>
-          <div
-            className={classNames(styles.rightBtn, nowBtn === 'right' && styles.nowBgc)}
-            onClick={e => handleChangeBtn(e, 'right')}
-          >
-            BURN
-          </div>
-        </div>
-        <div>123</div>
-        <div>123</div>
-      </div> */}
     </div>
   )
 }
