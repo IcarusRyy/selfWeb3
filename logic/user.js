@@ -1,47 +1,56 @@
 // 处理所有用户相关的业务逻辑, 包括Load, Register, Recover, Reset等
-
+"use strict"
 import Web3 from "web3";
+import * as verify3 from './verify.js';
 import * as selfweb3 from './index.js';
 
+export const Flow_Init = "Init";
+export const Flow_Load = "Load";
+export const Flow_Reset = "Reset";
+export const Flow_Register = "Register";
+export const Flow_EnterDapp = "EnterDapp";
+export const Flow_Registered = "Registered";
+export const Flow_StoreSelfData = "StoreSelfData";
+
+// callback(selfAddress, web2Address)
 export function Init(walletAddress, inputWeb2Key, callback) {
-    initBackend('Init', walletAddress, inputWeb2Key, callback);
+    initBackend(Flow_Init, walletAddress, inputWeb2Key, callback);
 }
 
+// callback(registered, bound)
 export function Registered(walletAddress, selfAddress, callback) {
-    selfweb3.GetWeb3().Web3Execute("call", "Registered", walletAddress, 0, [selfAddress], function (loadResult) {
-        selfweb3.ShowMsg('', 'Registered', 'web3 contract call successed: ', loadResult);
-        if (callback !== undefined && callback !== null) callback(loadResult, true);//(loadResult['registered'], true);
+    selfweb3.GetWeb3().Execute("call", "Registered", walletAddress, 0, [selfAddress], function (loadResult) {
+        selfweb3.ShowMsg('', Flow_Registered, 'web3 Registered successed', '');
+        if (callback !== undefined && callback !== null) callback(loadResult, true);
     }, function (err) {
-        selfweb3.ShowMsg('error', 'Registered', 'web3 contract call failed: ', err);
+        selfweb3.ShowMsg('error', Flow_Registered, 'web3 contract call failed', err);
     });
 }
 
-export function Load(walletAddress, selfAddress, web2Address, callback) {
-    initWeb3('Load', walletAddress, selfAddress, web2Address, callback);
+// callback()
+export function Load(walletAddress, selfAddress, callback) {
+    initWeb3(Flow_Load, walletAddress, selfAddress, callback);
 }
 
-function initWeb3(flow, walletAddress, selfAddress, web2Address, callback) {
-    selfweb3.ShowWaitting(true);
-    selfweb3.SetProps("selfAddress", selfAddress);
-    selfweb3.SetProps("web2Address", web2Address);
+function initWeb3(flow, walletAddress, selfAddress, callback) {
     let message = 'SelfWeb3 Init: ' + (new Date()).getTime();
-    selfweb3.GetWeb3().Sign(flow, walletAddress, message, function(sig) {
+    selfweb3.GetWeb3().Sign(walletAddress, message, function(sig) {
         var loadParams = [];
         loadParams.push(selfAddress);
         loadParams.push(sig);
         loadParams.push(Web3.utils.asciiToHex(message));
-        selfweb3.GetWeb3().Web3Execute("call", "Load", walletAddress, 0, loadParams, function (loadResult) {
-            selfweb3.ShowMsg('', flow, 'web3 contract: Web3Public successed: ', loadResult);
+        selfweb3.GetWeb3().Execute("call", "Load", walletAddress, 0, loadParams, function (loadResult) {
             let recoverID = Web3.utils.hexToAscii(loadResult['recoverID']);
             let web3Public = Web3.utils.hexToAscii(loadResult['web3Public']);
-            selfweb3.ShowWaitting(false);
             selfweb3.SetProps("recoverID", recoverID);
             selfweb3.SetProps("web3Public", web3Public);
+            selfweb3.ShowMsg('', flow, 'user load successed', [recoverID, web3Public]);
             if (callback !== undefined && callback !== null) callback();
         }, function (err) {
-            selfweb3.ShowWaitting(false);
-            selfweb3.ShowMsg('error', flow, 'sign failed: ', err);
+            selfweb3.ShowMsg('error', flow, 'sign message failed', err);
         });
+    }, function(err) {
+        selfweb3.ShowMsg('error', flow, 'sign message failed', err);
     })
 }
 
@@ -56,20 +65,23 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
         selfweb3.SetProps('wasmPublic', JSON.parse(wasmResponse)['Data']);
         selfweb3.httpGet("/api/datas/load", queryMap, function(response) {
             if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
-                selfweb3.ShowMsg('error', flow, 'init web2 service failed: ', response['Error']);
+                selfweb3.ShowMsg('error', flow, 'init web2 server failed', response['Error']);
             } else {
                 let web2Response = response['Data'];
+                selfweb3.ShowMsg("", flow, "inint web2 server successed", web2Response);
                 WasmInit(walletAddress, inputWeb2Key, web2Response['Web2NetPublic'], web2Response['Web2Data'], function(initResponse) {
                     let wasmResp = {};
                     wasmResp = JSON.parse(initResponse);
                     if (wasmResp['Error'] !== '' && wasmResp['Error'] !== null && wasmResp['Error'] !== undefined) {
-                        selfweb3.wasmCallback("WasmInit", response['Error'], false);
+                        selfweb3.ShowMsg("error", flow, "inint web2 server failed", response['Error']);
                     } else {
+                        selfweb3.ShowMsg("", flow, "inint wasm successed", [wasmResp['Data'], web2Response['Web2Address']]);
                         if (callback !== undefined && callback !== null) callback(wasmResp['Data'], web2Response['Web2Address']);
-                        // initWeb3(flow, walletAddress, wasmResp['Data'], web2Response['Web2Address'], callback);
                     }
                 });
             }
+        }, function(err) {
+            selfweb3.ShowMsg("error", flow, "inint web2 server failed", err);
         })
     });
 }
@@ -83,46 +95,41 @@ function initBackend(flow, walletAddress, inputWeb2Key, callback) {
             window.location.reload();
         }, 60000);
     })
+
+    // callback(qrcode)
 */
-export function Register(selfAddress, walletAddress, recoverID, callback) {
+export function Register(walletAddress, selfAddress, recoverID, callback) {
     // wasm
     let userID = walletAddress;
-    selfweb3.ShowWaitting(true);
     WasmRegister(userID, recoverID, function(wasmResponse) {
         let response = JSON.parse(wasmResponse);
         if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
-            selfweb3.wasmCallback("WasmRegister", response['Error'], false);
+            selfweb3.ShowMsg("error", Flow_Register, "user register failed", response['Error']);
         } else {
-            selfweb3.wasmCallback("Register");
             var registParams = [];
             registParams.push(selfAddress);
             registParams.push(Web3.utils.asciiToHex(response['Data']['RecoverID']));
             registParams.push(Web3.utils.asciiToHex(response['Data']['Web3Key']));
             registParams.push(Web3.utils.asciiToHex(response['Data']['Web3Public']));
             // 流程: contract.Register ===> webAuthnRegister ===> /api/datas/store ===> TOTP QRCode
-            selfweb3.GetWeb3().Web3Execute("send", "Register", walletAddress, 0, registParams, function (result) {
-                selfweb3.ShowWaitting(false);
-
+            selfweb3.GetWeb3().Execute("send", Flow_Register, walletAddress, 0, registParams, function (result) {
                 // webAuthn register
-                // self.$parent.getSelf().$refs.webauthn.webRegister(userID, function(){
-                //     self.$parent.getSelf().enableSpin(false);
-                //     self.storeWeb2Data(userID, recoverID, response['Data']['Web2Data'], response['Data']['QRCode']);
-                // }, function() {
-                //     self.$parent.getSelf().enableSpin(false);
-                //     self.$Message.error('webAuthn register failed');
-                // });
-
-                StoreSelfData(userID, recoverID, response['Data']['Web2Data'], function() {
-                    if (callback !== undefined && callback !== null) callback(response['Data']['QRCode']);
+                verify3.WebAuthnRegister(Flow_Register, userID, function(){
+                    StoreSelfData(userID, recoverID, response['Data']['Web2Data'], function() {
+                        selfweb3.ShowMsg('', Flow_Register, 'user register successed', selfAddress);
+                        if (callback !== undefined && callback !== null) callback(response['Data']['QRCode']);
+                    });
+                }, function() {
+                    selfweb3.ShowMsg('error', Flow_Register, 'user register failed', err);
                 });
             }, function (err) {
-                selfweb3.ShowWaitting(false);
-                selfweb3.ShowMsg('error', 'Register', 'web3 contract: register failed: ', walletAddress);
+                selfweb3.ShowMsg('error', Flow_Register, 'user register failed', err);
             })
         }
     })
 }
 
+// callback()
 export function StoreSelfData(userID, recoverID, web2Data, callback) {
     let formdata = new FormData();
     formdata.append("userID", userID);
@@ -133,106 +140,94 @@ export function StoreSelfData(userID, recoverID, web2Data, callback) {
         if (storeResponse['Error'] == '') {
             if (callback !== undefined && callback !== null) callback();
         } else {
-            selfweb3.ShowMsg('error', 'StoreSelfData', 'store selfData failed: ', storeResponse['Error']);
+            selfweb3.ShowMsg('error', Flow_StoreSelfData, 'store selfData failed', storeResponse['Error']);
         }
     })
 }
 
-// export function EmailVerify(code, emailMap, callback) {
-//     let userID = self.$parent.getSelf().getWalletAddress();
-//     WasmVerify(userID, code, 'email', JSON.stringify(emailMap), function(wasmResponse) {
-//         let response = JSON.parse(wasmResponse);
-//         console.log('emailVerify: ', response);
-//         if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
-//             selfweb3.wasmCallback("WasmVerify", response['Error'], false);
-//         } else {
-//             if (callback !== undefined && callback !== null) callback(response['Data']);
-//         }
-//     })
-// }
+// callback(resetParams)
+export function Reset(walletAddress, selfAddress, code, resetKind, callback) {
+    if (resetKind === "TOTP") {
+        let verifyParams = {"method": "ResetTOTPKey", "recoverID": selfweb3.GetProps('recoverID'), "web3Public": selfweb3.GetProps('web3Public'), "action": "query"};
+        verify3.FinishEmailVerify(walletAddress, code, JSON.stringify(verifyParams), function(wasmResponse){
+            packRelateVerifyParams(Flow_Reset, walletAddress, 'query', wasmResponse['Data']['RelateVerify'], function(merkleParams){
+                verify3.WebAuthnVerify(Flow_Reset, walletAddress, selfAddress, merkleParams, function(){
+                    StoreSelfData(walletAddress, '', wasmResponse['Data']['Reset']['Web2Data'], function() {
+                        if (callback !== undefined && callback !== null) callback(wasmResponse['Data']['Reset']['QRCode']);
+                    });
+                });
+            });
+        });
+    } else if (resetKind === "Web2Key") {
+        console.log(resetKind)
+    } else if (resetKind === "WebAuthn") {
+        console.log(resetKind)
+    }
+}
 
-// export function TOTPVerify(code, emailMap, callback) {
+/*
+1. beginTOTPVerify:
+    function beginTOTPVerify(callback) {
+        // enable TOTP code input
+        // callback(code)
+    }
 
-// }
+2. callback()
+*/
+export function EnterDapp(walletAddress, selfAddress, beginTOTPVerify, callback) {
+    if (beginTOTPVerify === undefined || beginTOTPVerify === null) {
+        selfweb3.ShowMsg("error", Flow_EnterDapp, "load web3Key failed", "invalid beginTOTPVerify function");
+        return;
+    }
+    console.log("EnterDapp: ", walletAddress, selfAddress)
 
-// export function WebAuthnVerify(code, emailMap, callback) {
+    beginTOTPVerify(function(code){
+        let web3Map = {"method": "RelationVerify", "web3Key": '', "web3Public": selfweb3.GetProps('web3Public'), "action": "query"};
+        verify3.TOTPVerify(Flow_EnterDapp, walletAddress, code, JSON.stringify(web3Map), function(wasmResponse) {
+            packRelateVerifyParams(Flow_EnterDapp, walletAddress, web3Map['action'], wasmResponse, function(merkleParams){
+                verify3.WebAuthnVerify(Flow_EnterDapp, walletAddress, selfAddress, merkleParams, callback);
+            });
+        })
+    })
+}
 
-// }
-
-// // 关联验证流程: web3合约: 钱包签名校验(提取web3Public) ---> TOTP校验 ---> web3合约: zk证明校验, 钱包签名校验(提取web3Key) ---> webAuthn登录校验
-// export function RelationVerify(bTOTP, bWebAuthn, callback, failed) {
-//     let self = this;
-//     let userID = self.$parent.getSelf().getWalletAddress();
-//     let verifyWebAuthn = function(params) {
-//         let loadParams = [];
-//         loadParams.push(self.$parent.getSelf().selfAddress);
-//         loadParams = loadParams.concat(params);
-//         self.$parent.getSelf().$refs.walletPanel.Execute("call", "Web3Key", userID, 0, loadParams, function (loadResult) {
-//             console.log('web3 contract: Load from contract successed: ', loadResult);
-//             let web3Map = {"method": "WebAuthnKey", "web3Key": Web3.utils.hexToAscii(loadResult), "web3Public": self.web3Public};
-//             WasmHandle(userID, JSON.stringify(web3Map), function(wasmWebAuthnResponse) {
-//                 self.$parent.getSelf().$refs.webauthn.webLogin(self.$parent.getSelf().getWalletAddress(), JSON.parse(wasmWebAuthnResponse)['Data'], function() {
-//                     if (callback !== undefined && callback !== null) callback();
-//                 }, function() {
-//                     if (failed !== undefined && failed !== null) failed();
-//                 })
-//             })
-//         }, function (err) {
-//             self.$Message.error('web3 contract: Load from contract failed');
-//             if (failed !== undefined && failed !== null) failed();
-//         })
-//     }
-
-//     if (bTOTP === true) {
-//         let relateTimes = "1";
-//         let web3Map = {"method": "RelationVerify", "web3Key": '', "web3Public": self.web3Public, "action": "dapp"};
-//         self.$parent.getSelf().switchPanel('RelationVerify', '', JSON.stringify(web3Map), function(wasmTOTPResponse){
-//             if (bWebAuthn === true) {
-//                 packRelateVerifyParams(web3Map['action'], wasmTOTPResponse, verifyWebAuthn);
-//             } else {
-//                 if (callback !== undefined && callback !== null) callback(wasmTOTPResponse);
-//             }
-//         })
-//     } else if (bWebAuthn === true) {
-//         verifyWebAuthn([]);
-//     }
-// }
-
-// // action: dapp, deposit, withdraw
-// function packRelateVerifyParams(action, verifyParams, callback) {
-//     console.log('packRelateVerifyParams: ', action, verifyParams);
-//     let self = this;
-//     let queryMap = {};
-//     queryMap['action'] = action;
-//     queryMap['kind'] = 'relateVerify';
-//     queryMap['nonce'] = verifyParams['nonce'];
-//     queryMap['userID'] = self.$parent.getSelf().getWalletAddress();
-//     self.$parent.getSelf().httpGet("/api/datas/load", queryMap, function(response) {
-//         if (response.data['Error'] !== '' && response.data['Error'] !== null && response.data['Error'] !== undefined) {
-//             self.$Message.error('load datas from web2 service failed: ', response.data['Error']);
-//         } else {
-//             const relateVerifyParams = response.data['Data'];
-//             console.log('before packRelateVerifyParams: ', relateVerifyParams);
-//             const merkleParams = self.$parent.getSelf().$refs.walletPanel.getWeb3().eth.abi.encodeParameter(
-//                 {
-//                     "VerifyParam": {
-//                         "kindList": 'uint256[]',
-//                         "msgList": 'bytes[]',
-//                         "sigList": 'bytes[]',
-//                         "proofs": 'bytes32[][]',
-//                         "leaves": 'bytes32[]',
-//                     }
-//                 },
-//                 {
-//                     "kindList": [1, 2],
-//                     "msgList": [Web3.utils.asciiToHex(relateVerifyParams['message']), Web3.utils.asciiToHex(verifyParams['message'])],
-//                     "sigList": [relateVerifyParams['signature'], verifyParams['signature']],
-//                     "proofs": [relateVerifyParams['proofs']],
-//                     "leaves": relateVerifyParams['leaves'],
-//                 }
-//             )
-//             console.log('&^^^^^^^^^^^^^^^^^merkleParams: ', merkleParams, relateVerifyParams, verifyParams);
-//             if (callback !== undefined && callback !== null) callback(merkleParams);
-//         }
-//     })
-// }
+// action: query, update
+function packRelateVerifyParams(flow, walletAddress, action, verifyParams, callback) {
+    console.log('packRelateVerifyParams: ', action, verifyParams);
+    let queryMap = {};
+    queryMap['action'] = action;
+    queryMap['kind'] = 'relateVerify';
+    queryMap['nonce'] = verifyParams['nonce'];
+    queryMap['userID'] = walletAddress;
+    selfweb3.httpGet("/api/datas/load", queryMap, function(response) {
+        if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
+            selfweb3.ShowMsg('error', flow, 'load datas from web2 server failed', response['Error']);
+        } else {
+            const relateVerifyParams = response['Data'];
+            console.log('before packRelateVerifyParams: ', relateVerifyParams);
+            console.log(Web3.utils.asciiToHex(relateVerifyParams['message']))
+            console.log(Web3.utils.asciiToHex(verifyParams['message']))
+            
+            const merkleParams = selfweb3.GetWeb3().web3.eth.abi.encodeParameter(
+                {
+                    "VerifyParam": {
+                        "kindList": 'uint256[]',
+                        "msgList": 'bytes[]',
+                        "sigList": 'bytes[]',
+                        "proofs": 'bytes32[][]',
+                        "leaves": 'bytes32[]',
+                    }
+                },
+                {
+                    "kindList": [1, 2],
+                    "msgList": [Web3.utils.asciiToHex(relateVerifyParams['message']), Web3.utils.asciiToHex(verifyParams['message'])],
+                    "sigList": [relateVerifyParams['signature'], verifyParams['signature']],
+                    "proofs": [relateVerifyParams['proofs']],
+                    "leaves": relateVerifyParams['leaves'],
+                }
+            )
+            console.log('&^^^^^^^^^^^^^^^^^merkleParams: ', merkleParams, relateVerifyParams, verifyParams);
+            if (callback !== undefined && callback !== null) callback(merkleParams);
+        }
+    })
+}
