@@ -1,231 +1,32 @@
 "use strict";
-// import Web3 from "web3";
-// import selfWeb3ABI from './abi/SelfWeb3.json';
-// import selfVaultABI from './abi/SelfVault.json';
+import Web3 from './contract/web3.js';
 
 export let web3 = null;
 export let networkId ='';
 export let ContractABI = '';
 export let ContractAddress = '';
 
-const selfWeb3ABI = `[
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "web2Address",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "selfAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes",
-				"name": "signature",
-				"type": "bytes"
-			},
-			{
-				"internalType": "bytes",
-				"name": "message",
-				"type": "bytes"
-			}
-		],
-		"name": "Load",
-		"outputs": [
-			{
-				"internalType": "bytes",
-				"name": "recoverID",
-				"type": "bytes"
-			},
-			{
-				"internalType": "bytes",
-				"name": "web3Public",
-				"type": "bytes"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "Meta",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "registTotal",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "selfAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "wallet",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes",
-				"name": "vparam",
-				"type": "bytes"
-			}
-		],
-		"name": "Rebind",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "selfAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes",
-				"name": "recoverID",
-				"type": "bytes"
-			},
-			{
-				"internalType": "bytes",
-				"name": "web3Key",
-				"type": "bytes"
-			},
-			{
-				"internalType": "bytes",
-				"name": "web3Public",
-				"type": "bytes"
-			}
-		],
-		"name": "Register",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "selfAddress",
-				"type": "address"
-			}
-		],
-		"name": "Registered",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "registered",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "selfAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes",
-				"name": "vparam",
-				"type": "bytes"
-			}
-		],
-		"name": "Web3Key",
-		"outputs": [
-			{
-				"internalType": "bytes",
-				"name": "web3Key",
-				"type": "bytes"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-]`
-
 export const ContractSelfWeb3 = "SelfWeb3";
 const contracts = {
     "SelfWeb3": {
         '5': '0xcE25460c82A2dE7D4bBEd1fA98C4a3f27f6362df',
-        '1': '0xfD9d71a92E3cA25da1219E2A1B5D78F99cD0C36C',
+        '1': '0xe6Cfe1dAD9200b4740Ed3bAe3e2c73A127C16a3B',
         '421613': '0x7B6E05a55B1756f827F205BF454BF75288904ecF'
     }
 }
 export function SetContract(name) {
+    // console.log(selfWeb3ABI)
     ContractAddress = contracts[name][networkId];
-    if (name === ContractSelfWeb3) ContractABI = JSON.parse(selfWeb3ABI);
+    if (name === ContractSelfWeb3) {
+        fetch('/ABI/SelfWeb3.json').then(response => {
+            return response.json();
+        }).then(data => {
+            ContractABI = data;
+        }).catch(err => {
+            // Do something for an error here
+            console.log("Error Reading data " + err);
+        });
+    }
 }
 
 /*
@@ -249,7 +50,6 @@ export async function Init(contractName, provider) {
 export function UnInit() {
     web3 = null;
     networkId = '';
-
 }
 
 /*

@@ -55,10 +55,10 @@ const HomePage = () => {
       if (registered === true) {
           if (bound === true) {
               // 已注册, 钱包地址一致, 开始加载用户私有信息
-              if (await GetUser().Load(address, selfAddress) === true) {
+              GetUser().Load(address, selfAddress, function() {
                 // 已注册, 钱包地址一致, 用拿到的地址信息初始化profile(第一个卡片的内容), 用户加载流程完成
                 console.log('selfAddress: ', selfAddress, 'web2Address: ', web2Address, 'contractAddress: ', GetWeb3().ContractAddress)
-              }
+              })
           } else {
               console.log('// 已注册, 但钱包地址不一致, 弹出modal框提示是否重新绑定钱包, 启动钱包重新绑定流程')
           }
