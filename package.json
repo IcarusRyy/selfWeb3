@@ -26,6 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
+    "@loadable/component": "^5.15.3",
     "@types/less": "^3.0.3",
     "@web3modal/ethereum": "^2.7.1",
     "@web3modal/react": "^2.7.1",
@@ -46,6 +47,7 @@
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
+    "@types/loadable__component": "^5.13.6",
     "@types/node": "^20.4.5",
     "@types/react": "^18.2.18",
     "@types/react-dom": "^18.2.7",
