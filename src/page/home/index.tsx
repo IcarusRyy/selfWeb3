@@ -3,13 +3,14 @@ import LazyWrapper from '@/share/components/LazyWrapper'
 import styles from './index.less'
 import { useNavigate } from 'react-router-dom'
 import { Web3Button, useWeb3Modal } from '@web3modal/react'
-import { Button, Card } from 'antd'
+import { Button, Card, message } from 'antd'
 import { useAccount } from 'wagmi'
 import { Init, GetWeb3, GetUser } from '@/assets/logic/index'
 import { ethereumClient } from '@/assets/constants'
 import loadable from '@loadable/component'
-import { Register } from '@/assets/logic/user'
+import { Register, Reset } from '@/assets/logic/user'
 
+const ResetModal = loadable(() => import('@/page/component/resetModal'))
 // // prefetch
 // const PreFetchDemo = lazy(
 //   () =>
@@ -42,6 +43,8 @@ const HomePage = () => {
   const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined)
   const [selfAddress, setSelfAddress] = useState<string>()
   const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false)
+  const [showResetModal, setShowResetModal] = useState<boolean>(false)
+  const [QRCode, setQRCode] = useState<string>()
   const navigate = useNavigate()
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
   const { address, connector, isConnected, isDisconnected } = useAccount()
@@ -134,6 +137,27 @@ const HomePage = () => {
     },
     [address, selfAddress],
   )
+
+  // 重置相关
+  const handleCloseResetModal = useCallback(() => {
+    setShowResetModal(false)
+  }, [])
+  // 重置成功回调
+  const resetSuccessCb = useCallback((QRcode: string) => {
+    message.success('Reset successful')
+    setQRCode(QRcode)
+    setShowResetModal(false)
+  }, [])
+  // 重置失败回调
+  const resetFailCb = useCallback(() => {
+    message.error('Reset failed')
+  }, [])
+  const handleSubmitResetModalForm = useCallback(
+    (params: { email: string; code: string; resetKind: string }) => {
+      Reset(address, selfAddress, params.code, params.resetKind, resetSuccessCb, resetFailCb)
+    },
+    [address, selfAddress],
+  )
   return (
     <div className={styles.homeBox}>
       <div className={styles.container}>
@@ -154,7 +178,7 @@ const HomePage = () => {
               </Button>
             )}
             {isRegistered && !!selfAddress && (
-              <Button size="large" className="ml5 baseBtn" onClick={() => console.log('reset')}>
+              <Button size="large" className="ml5 baseBtn" onClick={() => setShowResetModal(true)}>
                 Reset
               </Button>
             )}
@@ -206,6 +230,14 @@ const HomePage = () => {
           open={showRegisterModal}
           onOk={handleRegisterSelfWeb3}
           onClose={() => handleRegisterOpenModal(false)}
+        />
+      )}
+      {showResetModal && (
+        <ResetModal
+          title="Register"
+          open={showResetModal}
+          onOk={params => handleSubmitResetModalForm(params)}
+          onClose={handleCloseResetModal}
         />
       )}
     </div>
