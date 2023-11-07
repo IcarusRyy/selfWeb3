@@ -232,9 +232,10 @@ const HomePage = () => {
           onClose={() => handleRegisterOpenModal(false)}
         />
       )}
-      {showResetModal && (
+      {showResetModal && !!address && (
         <ResetModal
           title="Register"
+          walletAddress={address}
           open={showResetModal}
           onOk={params => handleSubmitResetModalForm(params)}
           onClose={handleCloseResetModal}
