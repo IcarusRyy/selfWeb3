@@ -10,7 +10,7 @@ export const ContractSelfWeb3 = "SelfWeb3";
 const contracts = {
     "SelfWeb3": {
         '5': '0xcE25460c82A2dE7D4bBEd1fA98C4a3f27f6362df',
-        '1': '0xd9E7C0d90aa186540E17fe6ee13F0De7E5B20EFe',
+        '1': '0x6AB8c33715F6F4f18bF605F63F0e7b235eeC1027',
         '421613': '0x7B6E05a55B1756f827F205BF454BF75288904ecF'
     }
 }
