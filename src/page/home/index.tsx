@@ -162,9 +162,9 @@ const HomePage = () => {
     <div className={styles.homeBox}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.title}>Welcome to selfWeb3.</span>
+          <span className={styles.title}>Welcome to selfWeb3</span>
           <p className={styles.description}>
-            Get started by configuring your desired network in, then modify the file!
+          An on-chain privatization solution that binds Web3 to the user one-to-one
           </p>
           <div className={styles.connect}>
             <Web3Button icon="hide" label="CONNECT" />
@@ -191,36 +191,36 @@ const HomePage = () => {
             onClick={() => handleClickCard('/deposit')}
             cover={
               <img
-                alt="example"
-                src="https://cra-javascript-starter.thirdweb-example.com/images/portal-preview.png"
+                alt="Preference"
+                src="http://localhost:8888/imgs/preferences.png"
               />
             }
           >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
+            <Meta title="Preference" description="System settings, deployed addresses, and personalization preferences" />
           </Card>
           <Card
             className={styles.card}
             hoverable
             cover={
               <img
-                alt="example"
-                src="https://cra-javascript-starter.thirdweb-example.com/images/portal-preview.png"
+                alt="SelfVault"
+                src="http://localhost:8888/imgs/selfvault.jpg"
               />
             }
           >
-            123
+            <Meta title="SelfVault" description="Your private vault, completely under your control, extremely safe" />
           </Card>
           <Card
             className={styles.card}
             hoverable
             cover={
               <img
-                alt="example"
-                src="https://cra-javascript-starter.thirdweb-example.com/images/portal-preview.png"
+                alt="SelfNFT"
+                src="http://localhost:8888/imgs/selfnft.jpg"
               />
             }
           >
-            <Meta title="Europe Street beat" description="www.instagram.com" />
+            <Meta title="SelfNFT" description="Your private vault, completely under your control, comming soon" />
           </Card>
         </div>
       </div>
