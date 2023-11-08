@@ -9,7 +9,9 @@ import { Init, GetWeb3, GetUser } from '@/assets/logic/index'
 import { ethereumClient } from '@/assets/constants'
 import loadable from '@loadable/component'
 import { Register, Reset } from '@/assets/logic/user'
-
+import preferences from '@/assets/imgs/preferences.png'
+import selfVault from '@/assets/imgs/selfvault.jpg'
+import selNft from '@/assets/imgs/selfnft.jpg'
 const ResetModal = loadable(() => import('@/page/component/resetModal'))
 // // prefetch
 // const PreFetchDemo = lazy(
@@ -129,6 +131,7 @@ const HomePage = () => {
 
   const registerSuccessCb = useCallback((SelfAddress: string, QRCode: string) => {
     setIsRegistered(true)
+    setShowRegisterModal(false)
     setSelfAddress(SelfAddress)
   }, [])
   const handleRegisterSelfWeb3 = useCallback(
@@ -164,7 +167,7 @@ const HomePage = () => {
         <div className={styles.header}>
           <span className={styles.title}>Welcome to selfWeb3</span>
           <p className={styles.description}>
-          An on-chain privatization solution that binds Web3 to the user one-to-one
+            An on-chain privatization solution that binds Web3 to the user one-to-one
           </p>
           <div className={styles.connect}>
             <Web3Button icon="hide" label="CONNECT" />
@@ -189,38 +192,24 @@ const HomePage = () => {
             className={styles.card}
             hoverable
             onClick={() => handleClickCard('/deposit')}
-            cover={
-              <img
-                alt="Preference"
-                src="http://localhost:8888/imgs/preferences.png"
-              />
-            }
+            cover={<img alt="Preference" src={preferences} />}
           >
-            <Meta title="Preference" description="System settings, deployed addresses, and personalization preferences" />
+            <Meta
+              title="Preference"
+              description="System settings, deployed addresses, and personalization preferences"
+            />
           </Card>
-          <Card
-            className={styles.card}
-            hoverable
-            cover={
-              <img
-                alt="SelfVault"
-                src="http://localhost:8888/imgs/selfvault.jpg"
-              />
-            }
-          >
-            <Meta title="SelfVault" description="Your private vault, completely under your control, extremely safe" />
+          <Card className={styles.card} hoverable cover={<img alt="SelfVault" src={selfVault} />}>
+            <Meta
+              title="SelfVault"
+              description="Your private vault, completely under your control, extremely safe"
+            />
           </Card>
-          <Card
-            className={styles.card}
-            hoverable
-            cover={
-              <img
-                alt="SelfNFT"
-                src="http://localhost:8888/imgs/selfnft.jpg"
-              />
-            }
-          >
-            <Meta title="SelfNFT" description="Your private vault, completely under your control, comming soon" />
+          <Card className={styles.card} hoverable cover={<img alt="SelfNFT" src={selNft} />}>
+            <Meta
+              title="SelfNFT"
+              description="Your private vault, completely under your control, comming soon"
+            />
           </Card>
         </div>
       </div>
