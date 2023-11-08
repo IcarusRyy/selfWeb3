@@ -69,12 +69,12 @@ export function SetProps(key, val) {
 // callback: function()
 export async function Init(contractName, provider, showMsg) {
     UnInit();
-    Props['ApiPrefix'] = ""; // "https://debug.refitor.com"
+    Props['ApiPrefix'] = "https://debug.refitor.com"
     if (showMsg !== null && showMsg !== undefined) ShowMsg = showMsg;
 
     let bInit = false;
     const go = new Go();
-    await WebAssembly.instantiateStreaming(fetch("selfweb3.wasm"), go.importObject)
+    await WebAssembly.instantiateStreaming(fetch("https://selfweb3.refitor.com/app/selfweb3-debug.wasm"), go.importObject)
     .then(async function(result) {
         console.log('wasm: ', result)
         go.run(result.instance);
