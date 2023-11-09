@@ -1,6 +1,6 @@
 // 处理所有用户相关的业务逻辑, 包括Load, Register, Recover, Reset等
 "use strict"
-import './contract/web3.js';
+import Web3 from './contract/web3.js';
 import * as verify3 from './verify.js';
 import * as selfweb3 from './index.js';
 
