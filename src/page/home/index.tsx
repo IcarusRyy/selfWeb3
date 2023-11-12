@@ -180,12 +180,12 @@ const HomePage = () => {
     setShowResetModal(false)
   }, [])
   // 重置成功回调
-  const resetSuccessCb = useCallback((QRcode: string) => {
+  const resetSuccessCb = useCallback((QRCode: string) => {
     message.success('Reset successful')
     setResetLoading(true)
     console.log(QRCode, '重置 QRCode')
     handleOpenQRcodeModal(true)
-    setQRCode(QRcode)
+    setQRCode(QRCode)
     setShowResetModal(false)
   }, [])
   // 重置失败回调
@@ -196,7 +196,7 @@ const HomePage = () => {
   const handleSubmitResetModalForm = useCallback(
     (params: { email: string; code: string; resetKind: string }) => {
       setResetLoading(true)
-      Reset(address, selfAddress, params.code, params.resetKind, resetSuccessCb, resetFailCb)
+      Reset(address, selfAddress, params.code, params.resetKind, resetSuccessCb)
     },
     [address, selfAddress],
   )
