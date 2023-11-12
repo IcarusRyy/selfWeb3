@@ -13,6 +13,7 @@ import preferences from '@/assets/imgs/preferences.png'
 import selfVault from '@/assets/imgs/selfvault.jpg'
 import selNft from '@/assets/imgs/selfnft.jpg'
 import userInfo from '../store/user'
+import QRCodeModal from '../component/qrCodeModal'
 const ResetModal = loadable(() => import('@/page/component/resetModal'))
 // // prefetch
 // const PreFetchDemo = lazy(
@@ -50,6 +51,7 @@ const HomePage = () => {
   const [showResetModal, setShowResetModal] = useState<boolean>(false)
   const [resetLoading, setResetLoading] = useState<boolean>(false)
   const [QRCode, setQRCode] = useState<string>()
+  const [QRCodeOpenModal, setQRCodeOpenModal] = useState<boolean>()
   const navigate = useNavigate()
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
   const catchSelfAddress = localStorage.getItem('selfAddress')
@@ -158,7 +160,9 @@ const HomePage = () => {
     setIsRegistered(true)
     setShowRegisterModal(false)
     setSelfAddress(SelfAddress)
+    console.log(QRCode, '注册  QRCode')
     setQRCode(QRCode)
+    handleOpenQRcodeModal(true)
   }, [])
   const registerFailCb = useCallback(() => {
     setRegisterLoading(false)
@@ -179,6 +183,8 @@ const HomePage = () => {
   const resetSuccessCb = useCallback((QRcode: string) => {
     message.success('Reset successful')
     setResetLoading(true)
+    console.log(QRCode, '重置 QRCode')
+    handleOpenQRcodeModal(true)
     setQRCode(QRcode)
     setShowResetModal(false)
   }, [])
@@ -194,6 +200,10 @@ const HomePage = () => {
     },
     [address, selfAddress],
   )
+  // 二维码相关
+  const handleOpenQRcodeModal = useCallback((open: boolean) => {
+    setQRCodeOpenModal(open)
+  }, [])
   return (
     <div className={styles.homeBox}>
       <div className={styles.container}>
@@ -263,6 +273,13 @@ const HomePage = () => {
           open={showResetModal}
           onOk={params => handleSubmitResetModalForm(params)}
           onClose={handleCloseResetModal}
+        />
+      )}
+      {QRCodeOpenModal && !!QRCode && (
+        <QRCodeModal
+          open={QRCodeOpenModal}
+          onClose={() => handleOpenQRcodeModal(false)}
+          qrCode={QRCode}
         />
       )}
     </div>
