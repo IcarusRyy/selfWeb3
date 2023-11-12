@@ -6,6 +6,7 @@ import { useForm } from 'antd/es/form/Form'
 interface RegisterModalPropsType {
   open: boolean
   title: string
+  loading: boolean
   onClose: () => void
   onOk: (params: { email: string }) => void
 }
@@ -13,7 +14,7 @@ type FieldType = {
   email: string
 }
 const RegisterModal: FC<RegisterModalPropsType> = (props: RegisterModalPropsType) => {
-  const { open, title, onClose, onOk } = props
+  const { open, title, onClose, onOk, loading } = props
   const [form] = useForm()
   const size = useSize(document.body)
   const isMobile = size?.width ? size.width <= 768 : window.innerWidth <= 768
@@ -27,6 +28,7 @@ const RegisterModal: FC<RegisterModalPropsType> = (props: RegisterModalPropsType
       open={open}
       onCancel={onClose}
       onOk={handleOk}
+      confirmLoading={loading}
       centered={isMobile}
       className={styles.registerModal}
     >

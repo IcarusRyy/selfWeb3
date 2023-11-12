@@ -12,6 +12,7 @@ import { Register, Reset } from '@/assets/logic/user'
 import preferences from '@/assets/imgs/preferences.png'
 import selfVault from '@/assets/imgs/selfvault.jpg'
 import selNft from '@/assets/imgs/selfnft.jpg'
+import userInfo from '../store/user'
 const ResetModal = loadable(() => import('@/page/component/resetModal'))
 // // prefetch
 // const PreFetchDemo = lazy(
@@ -45,10 +46,13 @@ const HomePage = () => {
   const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined)
   const [selfAddress, setSelfAddress] = useState<string>()
   const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false)
+  const [registerLoading, setRegisterLoading] = useState<boolean>(false)
   const [showResetModal, setShowResetModal] = useState<boolean>(false)
+  const [resetLoading, setResetLoading] = useState<boolean>(false)
   const [QRCode, setQRCode] = useState<string>()
   const navigate = useNavigate()
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
+  const catchSelfAddress = localStorage.getItem('selfAddress')
   const { address, connector, isConnected, isDisconnected } = useAccount()
   // const handleChangeBtn = useCallback((e: any, nowBtn: 'left' | 'right') => {
   //   e.preventDefault()
@@ -57,34 +61,42 @@ const HomePage = () => {
   //   navigate('/deposit')
   // }, [])
   useEffect(() => {
+    console.log(userInfo.isLoggedIn, 'userInfo.isLoggedIn')
     if (isConnected && !!connector) {
-      checkWalletForUser()
+      if (!userInfo.isLoggedIn) {
+        checkWalletForUser()
+      } else {
+        if (!!catchSelfAddress) {
+          setIsRegistered(true)
+          setSelfAddress(catchSelfAddress)
+        } else {
+          checkWalletForUser()
+        }
+      }
     } else {
       setIsRegistered(undefined)
     }
   }, [isConnected, connector])
-  const errorCb = (err: any, flow: any, msg: string, param: any) =>
-    console.log({ flow: flow, error: err === 'error', msg: msg, param: param })
+
+  // init 回调成功参数
+  const initSuccessParamsCb = useCallback(() => {
+    userInfo.changeLoginStatus(true)
+  }, [])
 
   // user初始化成功回调
   const initUserSuccessCb = async (selfAddress: string, web2Address: string) => {
     // check registered
     const { registered, bound } = await GetUser().Registered(address, selfAddress)
-    setIsRegistered(registered)
+    localStorage.setItem('selfAddress', selfAddress)
     setSelfAddress(selfAddress)
     if (registered === true) {
       if (bound === true) {
         // 已注册, 钱包地址一致, 开始加载用户私有信息
         GetUser().Load(address, selfAddress, function () {
           // 已注册, 钱包地址一致, 用拿到的地址信息初始化profile(第一个卡片的内容), 用户加载流程完成
-          console.log(
-            'selfAddress: ',
-            selfAddress,
-            'web2Address: ',
-            web2Address,
-            'contractAddress: ',
-            GetWeb3().ContractAddress,
-          )
+          setIsRegistered(registered)
+
+          userInfo.changeLoginStatus(true)
         })
       } else {
         console.log(
@@ -108,6 +120,13 @@ const HomePage = () => {
    * initUserSuccessCb：成功回调
    * initUserErrorCb：失败回调
    */
+  const errorCb = useCallback((err: any, flow: any, msg: string, param: any) => {
+    if (err && param.includes('User denied')) {
+      setIsRegistered(false)
+      window.location.reload()
+    }
+  }, [])
+
   const checkWalletForUser = useCallback(async () => {
     const currentProvider = await connector?.options.getProvider()
     const bInit = await Init(GetWeb3().ContractSelfWeb3, currentProvider, errorCb)
@@ -120,8 +139,13 @@ const HomePage = () => {
       if (!isConnected) {
         return open()
       }
+      if (!selfAddress && selfAddress !== '') {
+        return setShowRegisterModal(true)
+      }
+      if (!userInfo.isLoggedIn) return
+      navigate(pathname)
     },
-    [isConnected],
+    [isConnected, selfAddress],
   )
 
   // 注册相关
@@ -130,13 +154,19 @@ const HomePage = () => {
   }, [])
 
   const registerSuccessCb = useCallback((SelfAddress: string, QRCode: string) => {
+    setRegisterLoading(false)
     setIsRegistered(true)
     setShowRegisterModal(false)
     setSelfAddress(SelfAddress)
+    setQRCode(QRCode)
+  }, [])
+  const registerFailCb = useCallback(() => {
+    setRegisterLoading(false)
   }, [])
   const handleRegisterSelfWeb3 = useCallback(
     (params: { email: string }) => {
-      Register(address, selfAddress, params.email, registerSuccessCb)
+      setRegisterLoading(true)
+      Register(address, selfAddress, params.email, registerSuccessCb, registerFailCb)
     },
     [address, selfAddress],
   )
@@ -148,15 +178,18 @@ const HomePage = () => {
   // 重置成功回调
   const resetSuccessCb = useCallback((QRcode: string) => {
     message.success('Reset successful')
+    setResetLoading(true)
     setQRCode(QRcode)
     setShowResetModal(false)
   }, [])
   // 重置失败回调
   const resetFailCb = useCallback(() => {
+    setResetLoading(false)
     message.error('Reset failed')
   }, [])
   const handleSubmitResetModalForm = useCallback(
     (params: { email: string; code: string; resetKind: string }) => {
+      setResetLoading(true)
       Reset(address, selfAddress, params.code, params.resetKind, resetSuccessCb, resetFailCb)
     },
     [address, selfAddress],
@@ -216,6 +249,7 @@ const HomePage = () => {
       {showRegisterModal && (
         <RegisterModal
           title="Register"
+          loading={registerLoading}
           open={showRegisterModal}
           onOk={handleRegisterSelfWeb3}
           onClose={() => handleRegisterOpenModal(false)}
@@ -225,6 +259,7 @@ const HomePage = () => {
         <ResetModal
           title="Register"
           walletAddress={address}
+          loading={resetLoading}
           open={showResetModal}
           onOk={params => handleSubmitResetModalForm(params)}
           onClose={handleCloseResetModal}

@@ -9,6 +9,7 @@ import BottomBox from '@/share/components/bottomBox'
 import { useAccount, useBalance, useNetwork, useSwitchNetwork } from 'wagmi'
 import { getChainIcon } from '@/share/utils'
 import FromBox from '@/share/components/fromBox'
+import userInfo from '../store/user'
 
 const DepositPage = () => {
   const { address, isConnected } = useAccount()
@@ -26,6 +27,9 @@ const DepositPage = () => {
     // setChainIcon(res || '')
   }
   useEffect(() => {
+    if (!userInfo.isLoggedIn) {
+      navigate('/')
+    }
     if (chain?.id) {
       handleIcon(chain.id)
       refetch()

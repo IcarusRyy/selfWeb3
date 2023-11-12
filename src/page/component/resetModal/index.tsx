@@ -8,6 +8,7 @@ import { BeginEmailVerify } from '@/assets/logic/verify'
 interface RegisterModalPropsType {
   open: boolean
   title: string
+  loading: boolean
   walletAddress: string
   onClose: () => void
   onOk: (params: { email: string; code: string; resetKind: string }) => void
@@ -25,7 +26,7 @@ const formItemLayout = {
 }
 
 const RestModal: FC<RegisterModalPropsType> = (props: RegisterModalPropsType) => {
-  const { open, title, onClose, onOk, walletAddress } = props
+  const { open, title, onClose, onOk, walletAddress, loading } = props
   const [form] = useForm()
   const [countdown, setCountdown] = useState(0)
   const size = useSize(document.body)
@@ -77,6 +78,7 @@ const RestModal: FC<RegisterModalPropsType> = (props: RegisterModalPropsType) =>
       open={open} // 将 open 属性更名为 visible
       onCancel={onClose}
       onOk={handleOk}
+      confirmLoading={loading}
       centered={isMobile}
       className={styles.registerModal}
     >

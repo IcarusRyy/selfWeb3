@@ -1956,7 +1956,7 @@
             break;
     
           default:
-            console.log("unknown modifier: " + modifier);
+            // console.log("unknown modifier: " + modifier);
         }
       });
     }
@@ -5433,7 +5433,7 @@
           return;
         }
     
-        console.log.apply(console, args);
+        // console.log.apply(console, args);
       };
     
       Logger.prototype.debug = function () {
@@ -10236,7 +10236,7 @@
       try {
         tx.v = bignumber_1.BigNumber.from(transaction[6]).toNumber();
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         return tx;
       }
     
@@ -10274,7 +10274,7 @@
             recoveryParam: recoveryParam
           });
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
     
         tx.hash = keccak256_1.keccak256(rawTransaction);
@@ -12415,9 +12415,9 @@
           if (process.throwDeprecation) {
             throw new Error(msg);
           } else if (process.traceDeprecation) {
-            console.trace(msg);
+            // console.trace(msg);
           } else {
-            console.error(msg);
+            // console.error(msg);
           }
     
           warned = true;
@@ -12442,7 +12442,7 @@
     
           debugs[set] = function () {
             var msg = exports.format.apply(exports, arguments);
-            console.error('%s %d: %s', set, pid, msg);
+            // console.error('%s %d: %s', set, pid, msg);
           };
         } else {
           debugs[set] = function () {};
@@ -15429,7 +15429,7 @@
     Buffer.TYPED_ARRAY_SUPPORT = typedArraySupport();
     
     if (!Buffer.TYPED_ARRAY_SUPPORT && typeof console !== 'undefined' && typeof console.error === 'function') {
-      console.error('This browser lacks typed array (Uint8Array) support which is required by ' + '`buffer` v5.x. Use `buffer` v4.x if you require old browser support.');
+      // console.error('This browser lacks typed array (Uint8Array) support which is required by ' + '`buffer` v5.x. Use `buffer` v4.x if you require old browser support.');
     }
     
     function typedArraySupport() {
@@ -19011,7 +19011,7 @@
           var pair = parts[0].match(/([^=]+)=([\s\S]*)/);
     
           if (!pair) {
-            console.warn("Invalid cookie header encountered. Header: '" + str + "'");
+            // console.warn("Invalid cookie header encountered. Header: '" + str + "'");
             return;
           }
     
@@ -19019,7 +19019,7 @@
           var value = pair[2];
     
           if (typeof key !== 'string' || key.length === 0 || typeof value !== 'string') {
-            console.warn("Unable to extract values from cookie header. Cookie: '" + str + "'");
+            // console.warn("Unable to extract values from cookie header. Cookie: '" + str + "'");
             return;
           }
     
@@ -24395,7 +24395,7 @@
         throw new $TypeError(argumentName + ' must be a ' + recordType);
       }
     
-      console.log(predicate(ES, value), value);
+      // console.log(predicate(ES, value), value);
     };
     
     },{"../GetIntrinsic":164,"has":217}],167:[function(require,module,exports){
@@ -34436,7 +34436,7 @@
             w.count = existing.length;
     
             if ((typeof console === "undefined" ? "undefined" : _typeof(console)) === 'object' && console.warn) {
-              console.warn('%s: %s', w.name, w.message);
+              // console.warn('%s: %s', w.name, w.message);
             }
           }
         }
@@ -59288,9 +59288,9 @@
           if (config('throwDeprecation')) {
             throw new Error(msg);
           } else if (config('traceDeprecation')) {
-            console.trace(msg);
+            // console.trace(msg);
           } else {
-            console.warn(msg);
+            // console.warn(msg);
           }
     
           warned = true;
@@ -60842,7 +60842,7 @@
         var loweredName = name.toLowerCase();
     
         if (this._restrictedHeaders[loweredName] || /^sec-/.test(loweredName) || /^proxy-/.test(loweredName)) {
-          console.warn("Refused to set unsafe header \"" + name + "\"");
+          // console.warn("Refused to set unsafe header \"" + name + "\"");
           return;
         }
     
@@ -60959,7 +60959,7 @@
         }
     
         if (data && (this._method === 'GET' || this._method === 'HEAD')) {
-          console.warn("Discarding entity body for " + this._method + " requests");
+          // console.warn("Discarding entity body for " + this._method + " requests");
           data = null;
         } else {
           data = data || '';
@@ -63682,7 +63682,7 @@
     
       return function () {
         if (!_this.subscriptions[arguments[0]]) {
-          console.warn('Subscription ' + JSON.stringify(arguments[0]) + ' doesn\'t exist. Subscribing anyway.');
+          // console.warn('Subscription ' + JSON.stringify(arguments[0]) + ' doesn\'t exist. Subscribing anyway.');
         }
     
         var subscription = new Subscription({
@@ -65902,7 +65902,7 @@
     
       if (subOptions.params && subOptions.params.toBlock) {
         delete subOptions.params.toBlock;
-        console.warn('Invalid option: toBlock. Use getPastEvents for specific range.');
+        // console.warn('Invalid option: toBlock. Use getPastEvents for specific range.');
       } // prevent the event "newListener" and "removeListener" from being overwritten
     
     
@@ -66922,7 +66922,7 @@
     
     
     Registry.prototype.owner = function (name, callback) {
-      console.warn('Deprecated: Please use the "getOwner" method instead of "owner".');
+      // console.warn('Deprecated: Please use the "getOwner" method instead of "owner".');
       return this.getOwner(name, callback);
     };
     /**
@@ -67320,7 +67320,7 @@
     
     
     Registry.prototype.resolver = function (name, callback) {
-      console.warn('Deprecated: Please use the "getResolver" method instead of "resolver".');
+      // console.warn('Deprecated: Please use the "getResolver" method instead of "resolver".');
       return this.getResolver(name, callback);
     };
     /**
@@ -67738,7 +67738,7 @@
               case 9:
                 _context3.prev = 9;
                 _context3.t0 = _context3["catch"](3);
-                console.warn('Could not verify interface of resolver contract at "' + resolver.options.address + '". ');
+                // console.warn('Could not verify interface of resolver contract at "' + resolver.options.address + '". ');
     
               case 12:
                 if (supported) {
