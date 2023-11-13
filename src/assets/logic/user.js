@@ -270,7 +270,7 @@ export function Reset(walletAddress, selfAddress, code, resetKind, callback, fai
                     wasmResponse['Data']['Reset']['Web2Data'],
                     function () {
                       if (callback !== undefined && callback !== null)
-                        callback(wasmResponse['Data']['Reset']['QRCode'])
+                        callback(selfAddress, wasmResponse['Data']['Reset']['QRCode'])
                     },
                   )
                 },
