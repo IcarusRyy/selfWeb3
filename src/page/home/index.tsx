@@ -13,9 +13,10 @@ import preferences from '@/assets/imgs/preferences.png'
 import selfVault from '@/assets/imgs/selfvault.jpg'
 import selNft from '@/assets/imgs/selfnft.jpg'
 import userInfo from '../store/user'
-import QRCodeModal from '../component/qrCodeModal'
-import TotpVerifyModal from '../component/totpVerify'
 const ResetModal = loadable(() => import('@/page/component/resetModal'))
+const QRCodeModal = loadable(() => import('../component/qrCodeModal'))
+const TotpVerifyModal = loadable(() => import('@/page/component/totpVerify'))
+const SystemInfoModal = loadable(() => import('@/page/component/systemInfoModal'))
 // // prefetch
 // const PreFetchDemo = lazy(
 //   () =>
@@ -47,6 +48,7 @@ const HomePage = () => {
   // const [hasInfo, setHasInfo] = useState<any>({})
   const [isRegistered, setIsRegistered] = useState<boolean | undefined>(undefined)
   const [selfAddress, setSelfAddress] = useState<string>()
+  const [web2Address, setWeb2Address] = useState<string>()
   const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false)
   const [registerLoading, setRegisterLoading] = useState<boolean>(false)
   const [showResetModal, setShowResetModal] = useState<boolean>(false)
@@ -55,6 +57,7 @@ const HomePage = () => {
   const [QRCodeOpenModal, setQRCodeOpenModal] = useState<boolean>(false)
   const [totpVerifyOpenModal, setTotpVerifyOpenModal] = useState<boolean>(false)
   const [totpVerifyLoading, setTotpVerifyLoading] = useState<boolean>(false)
+  const [systemInfoOpenModal, setSystemInfoOpenModal] = useState<boolean>(false)
   const navigate = useNavigate()
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
   const catchSelfAddress = localStorage.getItem('selfAddress')
@@ -94,6 +97,7 @@ const HomePage = () => {
     const { registered, bound } = await GetUser().Registered(address, selfAddress)
     localStorage.setItem('selfAddress', selfAddress)
     setSelfAddress(selfAddress)
+    setWeb2Address(web2Address)
     if (registered === true) {
       if (bound === true) {
         // 已注册, 钱包地址一致, 开始加载用户私有信息
@@ -258,7 +262,7 @@ const HomePage = () => {
           <Card
             className={styles.card}
             hoverable
-            // onClick={() => handleClickCard('/withdraw')}
+            onClick={() => setSystemInfoOpenModal(true)}
             cover={<img alt="Preference" src={preferences} />}
           >
             <Meta
@@ -317,6 +321,16 @@ const HomePage = () => {
           open={totpVerifyOpenModal}
           onCancel={() => setTotpVerifyOpenModal(false)}
           onOk={(code: string) => handleInDeposit(code)}
+        />
+      )}
+      {systemInfoOpenModal && !!selfAddress && !!web2Address && (
+        <SystemInfoModal
+          web2Address={web2Address}
+          selfAddress={selfAddress}
+          title="Preference"
+          open={systemInfoOpenModal}
+          onCancel={() => setSystemInfoOpenModal(false)}
+          onOK={() => setSystemInfoOpenModal(false)}
         />
       )}
     </div>
