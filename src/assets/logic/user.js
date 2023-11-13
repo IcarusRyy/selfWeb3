@@ -300,52 +300,41 @@ export function Reset(walletAddress, selfAddress, code, resetKind, callback, fai
 
 2. callback()
 */
-export function EnterDapp(walletAddress, selfAddress, beginTOTPVerify, callback) {
-  if (beginTOTPVerify === undefined || beginTOTPVerify === null) {
-    selfweb3.ShowMsg(
-      'error',
-      Flow_EnterDapp,
-      'load web3Key failed',
-      'invalid beginTOTPVerify function',
-    )
-    return
-  }
-  //   console.log('EnterDapp: ', walletAddress, selfAddress)
-
-  beginTOTPVerify(function (code) {
-    let web3Map = { method: 'TOTPVerify', action: 'query', relateTimes: '1' }
-    verify3.TOTPVerify(
-      Flow_EnterDapp,
-      walletAddress,
-      code,
-      JSON.stringify(web3Map),
-      function (wasmResponse) {
-        selfAuthVerify2(
-          Flow_EnterDapp,
-          walletAddress,
-          web3Map['action'],
-          wasmResponse,
-          function () {
-            let web3Map = { method: 'WebAuthnKey', selfKey: selfweb3.GetProps('selfKey') }
-            WasmHandle(walletAddress, JSON.stringify(web3Map), function (wasmWebAuthnResponse) {
-              //   console.log('WebAuthnKey: ', wasmWebAuthnResponse)
-              verify3.WebAuthnLogin(
-                Flow_EnterDapp,
-                walletAddress,
-                JSON.parse(wasmWebAuthnResponse)['Data'],
-                function () {
-                  if (callback !== undefined && callback !== null) callback()
-                },
-                function (err) {
-                  selfweb3.ShowMsg('error', Flow_EnterDapp, 'webAuthn verify failed', err)
-                },
-              )
-            })
-          },
-        )
-      },
-    )
-  })
+export function EnterDapp(walletAddress, selfAddress, code, callback, failed) {
+  let web3Map = { method: 'TOTPVerify', action: 'query', relateTimes: '1' }
+  verify3.TOTPVerify(
+    Flow_EnterDapp,
+    walletAddress,
+    code,
+    JSON.stringify(web3Map),
+    function (wasmResponse) {
+      selfAuthVerify2(
+        Flow_EnterDapp,
+        walletAddress,
+        web3Map['action'],
+        wasmResponse,
+        function () {
+          let web3Map = { method: 'WebAuthnKey', selfKey: selfweb3.GetProps('selfKey') }
+          WasmHandle(walletAddress, JSON.stringify(web3Map), function (wasmWebAuthnResponse) {
+            //   console.log('WebAuthnKey: ', wasmWebAuthnResponse)
+            verify3.WebAuthnLogin(
+              Flow_EnterDapp,
+              walletAddress,
+              JSON.parse(wasmWebAuthnResponse)['Data'],
+              function () {
+                if (callback !== undefined && callback !== null) callback()
+              },
+              function (err) {
+                if (failed !== undefined && failed !== null) failed(err)
+                // selfweb3.ShowMsg('error', Flow_EnterDapp, 'webAuthn verify failed', err)
+              },
+            )
+          })
+        },
+      )
+    },
+    failed,
+  )
 }
 
 // action: query, update

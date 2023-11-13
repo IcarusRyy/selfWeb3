@@ -54,13 +54,14 @@ export function FinishEmailVerify(walletAddress, code, verifyParams, callback) {
   })
 }
 
-export function TOTPVerify(flow, walletAddress, code, verifyParams, callback) {
+export function TOTPVerify(flow, walletAddress, code, verifyParams, callback, failed) {
   //   console.log('TOTPVerify: ', flow, walletAddress, code, verifyParams)
   WasmVerify(walletAddress, code, 'TOTP', verifyParams, function (wasmResponse) {
     // console.log('TOTPVerify wasmResponse: ', wasmResponse)
     let response = JSON.parse(wasmResponse)
     if (response['Error'] !== '' && response['Error'] !== null && response['Error'] !== undefined) {
-      selfweb3.ShowMsg('error', flow, 'TOTP verify failed', response['Error'])
+      // selfweb3.ShowMsg('error', flow, 'TOTP verify failed', response['Error'])
+      if (failed !== undefined && failed !== null) failed(response['Error'])
     } else {
       if (callback !== undefined && callback !== null) callback(response['Data'])
     }
