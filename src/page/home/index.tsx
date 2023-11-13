@@ -109,6 +109,7 @@ const HomePage = () => {
         )
       }
     } else {
+      setIsRegistered(false)
       console.log(registered, bound, '// 尚未注册')
     }
   }
@@ -263,7 +264,7 @@ const HomePage = () => {
           <Card
             className={styles.card}
             hoverable
-            onClick={() => handleClickCard('/deposit')}
+            // onClick={() => handleClickCard('/withdraw')}
             cover={<img alt="Preference" src={preferences} />}
           >
             <Meta
@@ -271,7 +272,12 @@ const HomePage = () => {
               description="System settings, deployed addresses, and personalization preferences"
             />
           </Card>
-          <Card className={styles.card} hoverable cover={<img alt="SelfVault" src={selfVault} />}>
+          <Card
+            className={styles.card}
+            hoverable
+            onClick={() => handleClickCard('/deposit')}
+            cover={<img alt="SelfVault" src={selfVault} />}
+          >
             <Meta
               title="SelfVault"
               description="Your private vault, completely under your control, extremely safe"
