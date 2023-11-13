@@ -155,6 +155,12 @@ const HomePage = () => {
     [isConnected, selfAddress],
   )
 
+  // 生成TOTP注册二维码
+  const getQRCodeLink = (selfAddress: string, QRCode: string) => {
+    const selfID = selfAddress.substring(0, 4) + "..." + selfAddress.substring(selfAddress.length - 4, selfAddress.length)
+    return 'otpauth://totp/selfweb3-' + GetWeb3().networkId + ':' + selfID + '?secret=' + QRCode.replace(/=/g,'')
+  }
+
   // 注册相关
   const handleRegisterOpenModal = useCallback((isOpen: boolean) => {
     setShowRegisterModal(isOpen)
@@ -165,8 +171,8 @@ const HomePage = () => {
     setIsRegistered(true)
     setShowRegisterModal(false)
     setSelfAddress(SelfAddress)
-    console.log(QRCode, '注册  QRCode')
-    setQRCode(QRCode)
+    // console.log(QRCode, '注册  QRCode')
+    setQRCode(getQRCodeLink(SelfAddress, QRCode))
     handleOpenQRcodeModal(true)
   }, [])
   const registerFailCb = useCallback(() => {
@@ -185,12 +191,12 @@ const HomePage = () => {
     setShowResetModal(false)
   }, [])
   // 重置成功回调
-  const resetSuccessCb = useCallback((QRCode: string) => {
+  const resetSuccessCb = useCallback((SelfAddress: string, QRCode: string) => {
     message.success('Reset successful')
     setResetLoading(true)
-    console.log(QRCode, '重置 QRCode')
+    // console.log(QRCode, '重置 QRCode')
     handleOpenQRcodeModal(true)
-    setQRCode(QRCode)
+    setQRCode(getQRCodeLink(SelfAddress, QRCode))
     setShowResetModal(false)
   }, [])
   // 重置失败回调
@@ -201,7 +207,7 @@ const HomePage = () => {
   const handleSubmitResetModalForm = useCallback(
     (params: { email: string; code: string; resetKind: string }) => {
       setResetLoading(true)
-      Reset(address, selfAddress, params.code, params.resetKind, resetSuccessCb)
+      Reset(address, selfAddress, params.code, params.resetKind, resetSuccessCb, resetFailCb)
     },
     [address, selfAddress],
   )
