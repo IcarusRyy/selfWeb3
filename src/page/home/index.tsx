@@ -109,6 +109,7 @@ const HomePage = () => {
         )
       }
     } else {
+      setIsRegistered(false)
       console.log(registered, bound, '// 尚未注册')
     }
   }
