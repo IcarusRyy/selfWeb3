@@ -9,7 +9,8 @@ import { Init, GetWeb3, GetUser } from '@/assets/logic/index'
 import { ethereumClient } from '@/assets/constants'
 import loadable from '@loadable/component'
 import { EnterDapp, Register, Reset } from '@/assets/logic/user'
-import preferences from '@/assets/imgs/preferences.png'
+import HomeBackground from '@/assets/imgs/home-bg.jpg'
+import preferences from '@/assets/imgs/selfweb3.jpg'
 import selfVault from '@/assets/imgs/selfvault.jpg'
 import selNft from '@/assets/imgs/selfnft.jpg'
 import userInfo from '../store/user'
@@ -161,9 +162,11 @@ const HomePage = () => {
   )
 
   // 生成TOTP注册二维码
+  const getSelfID = (selfAddress: string) => {
+    return selfAddress.substring(0, 4) + "..." + selfAddress.substring(selfAddress.length - 4, selfAddress.length)
+  }
   const getQRCodeLink = (selfAddress: string, QRCode: string) => {
-    const selfID = selfAddress.substring(0, 4) + "..." + selfAddress.substring(selfAddress.length - 4, selfAddress.length)
-    return 'otpauth://totp/selfweb3-' + GetWeb3().networkId + ':' + selfID + '?secret=' + QRCode.replace(/=/g,'')
+    return 'otpauth://totp/selfweb3-' + GetWeb3().networkId + ':' + getSelfID(selfAddress) + '?secret=' + QRCode.replace(/=/g,'')
   }
 
   // 注册相关
@@ -242,7 +245,7 @@ const HomePage = () => {
     <div className={styles.homeBox}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.title}>Welcome to selfWeb3</span>
+          <span className={styles.title}>Welcome to SelfWeb3</span>
           <p className={styles.description}>
             An on-chain privatization solution that binds Web3 to the user one-to-one
           </p>
@@ -272,7 +275,7 @@ const HomePage = () => {
             cover={<img alt="Preference" src={preferences} />}
           >
             <Meta
-              title="Preference"
+              title={selfAddress ? getSelfID(selfAddress) : "SelfWeb3"}
               description="System settings, deployed addresses, and personalization preferences"
             />
           </Card>
@@ -290,7 +293,7 @@ const HomePage = () => {
           <Card className={styles.card} hoverable cover={<img alt="SelfNFT" src={selNft} />}>
             <Meta
               title="SelfNFT"
-              description="Your private vault, completely under your control, comming soon"
+              description="Your private NFT, completely under your control, comming soon"
             />
           </Card>
         </div>
@@ -333,7 +336,7 @@ const HomePage = () => {
         <SystemInfoModal
           web2Address={web2Address}
           selfAddress={selfAddress}
-          title="Preference"
+          title="SelfWeb3"
           open={systemInfoOpenModal}
           onCancel={() => setSystemInfoOpenModal(false)}
           onOK={() => setSystemInfoOpenModal(false)}

@@ -1,6 +1,8 @@
 import { ContractAddress } from '@/assets/logic/web3'
-import { Modal } from 'antd'
+import { Modal, Card, Avatar } from 'antd'
 import React, { useEffect } from 'react'
+import preferences from '@/assets/imgs/preferences.jpg'
+import { UserOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 interface SystemInfoModalPropsType {
   open: boolean
@@ -13,26 +15,41 @@ interface SystemInfoModalPropsType {
 }
 
 const SystemInfoModal = (props: SystemInfoModalPropsType) => {
-  const { open, title = 'preference', selfAddress, web2Address, onOK, onCancel } = props
+  const { open, title = 'SelfWeb3', selfAddress, web2Address, onOK, onCancel } = props
   // useEffect(()=>{
 
   // }, [])
   return (
     <Modal open={open} title={title} onCancel={onCancel} footer={null}>
-      <div>
-        <div>
-          <span>selfAddress: </span>
-          <span>{selfAddress}</span>
-        </div>
-        <div>
-          <span>web2Address: </span>
-          <span>{web2Address}</span>
-        </div>
-        <div>
-          <span>contractAddress: </span>
-          <span>{ContractAddress}</span>
-        </div>
-      </div>
+        <Card
+          // style={{ width: 300 }}
+          cover={
+            <img
+              alt="Preference"
+              src={preferences}
+            />
+          }
+          actions={[
+            <UserOutlined key="profile" />,
+            <SettingOutlined key="setting" />,
+            <EllipsisOutlined key="ellipsis" />,
+          ]}
+        >
+          <div>
+            <div>
+              <span>Self: </span>
+              <span>{selfAddress}</span>
+            </div>
+            <div>
+              <span>Web2: </span>
+              <span>{web2Address}</span>
+            </div>
+            <div>
+              <span>Contract: </span>
+              <span>{ContractAddress}</span>
+            </div>
+          </div>
+        </Card>
     </Modal>
   )
 }
