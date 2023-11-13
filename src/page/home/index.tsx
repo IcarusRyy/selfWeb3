@@ -8,12 +8,13 @@ import { useAccount } from 'wagmi'
 import { Init, GetWeb3, GetUser } from '@/assets/logic/index'
 import { ethereumClient } from '@/assets/constants'
 import loadable from '@loadable/component'
-import { Register, Reset } from '@/assets/logic/user'
+import { EnterDapp, Register, Reset } from '@/assets/logic/user'
 import preferences from '@/assets/imgs/preferences.png'
 import selfVault from '@/assets/imgs/selfvault.jpg'
 import selNft from '@/assets/imgs/selfnft.jpg'
 import userInfo from '../store/user'
 import QRCodeModal from '../component/qrCodeModal'
+import TotpVerifyModal from '../component/totpVerify'
 const ResetModal = loadable(() => import('@/page/component/resetModal'))
 // // prefetch
 // const PreFetchDemo = lazy(
@@ -51,7 +52,9 @@ const HomePage = () => {
   const [showResetModal, setShowResetModal] = useState<boolean>(false)
   const [resetLoading, setResetLoading] = useState<boolean>(false)
   const [QRCode, setQRCode] = useState<string>()
-  const [QRCodeOpenModal, setQRCodeOpenModal] = useState<boolean>()
+  const [QRCodeOpenModal, setQRCodeOpenModal] = useState<boolean>(false)
+  const [totpVerifyOpenModal, setTotpVerifyOpenModal] = useState<boolean>(false)
+  const [totpVerifyLoading, setTotpVerifyLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   const { isOpen, open, close, setDefaultChain } = useWeb3Modal()
   const catchSelfAddress = localStorage.getItem('selfAddress')
@@ -144,7 +147,9 @@ const HomePage = () => {
       if (!selfAddress && selfAddress !== '') {
         return setShowRegisterModal(true)
       }
+
       if (!userInfo.isLoggedIn) return
+      if (pathname === '/deposit') return setTotpVerifyOpenModal(true)
       navigate(pathname)
     },
     [isConnected, selfAddress],
@@ -204,6 +209,24 @@ const HomePage = () => {
   const handleOpenQRcodeModal = useCallback((open: boolean) => {
     setQRCodeOpenModal(open)
   }, [])
+
+  // 进入deposit相关
+  const inDepositSuccessCb = useCallback(() => {
+    setTotpVerifyOpenModal(false)
+    setTotpVerifyLoading(false)
+    navigate('/deposit')
+  }, [])
+  const inDepositFailCb = useCallback(() => {
+    message.error('verification failed')
+    setTotpVerifyLoading(false)
+  }, [])
+  const handleInDeposit = useCallback(
+    (code: string) => {
+      setTotpVerifyLoading(true)
+      EnterDapp(address, selfAddress, code, inDepositSuccessCb, inDepositFailCb)
+    },
+    [address],
+  )
   return (
     <div className={styles.homeBox}>
       <div className={styles.container}>
@@ -280,6 +303,14 @@ const HomePage = () => {
           open={QRCodeOpenModal}
           onClose={() => handleOpenQRcodeModal(false)}
           qrCode={QRCode}
+        />
+      )}
+      {totpVerifyOpenModal && (
+        <TotpVerifyModal
+          loading={totpVerifyLoading}
+          open={totpVerifyOpenModal}
+          onCancel={() => setTotpVerifyOpenModal(false)}
+          onOk={(code: string) => handleInDeposit(code)}
         />
       )}
     </div>
