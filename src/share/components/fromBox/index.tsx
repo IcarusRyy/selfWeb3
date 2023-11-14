@@ -23,7 +23,7 @@ const FromBox = (props: FromBoxPropsType) => {
     <div className={styles.fromBox}>
       <div className={styles.fromTitleBox}>
         <span className={styles.fromLeftTitle}>{title}</span>
-        <span className={styles.fromRightTitle}>Faucet</span>
+        {/* <span className={styles.fromRightTitle}>Faucet</span> */}
       </div>
       <div className={styles.fromAmountBox}>
         <div>Amount</div>
@@ -47,7 +47,7 @@ const FromBox = (props: FromBoxPropsType) => {
             }
           />
         </div>
-        <div className="mt10">Balance: {data?.formatted} BNB</div>
+        <div className="mt10">Balance: {data?.formatted} ETH</div>
       </div>
     </div>
   )

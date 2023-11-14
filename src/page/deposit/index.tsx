@@ -52,10 +52,10 @@ const DepositPage = () => {
       <div className={styles.depositBox}>
         <div className={styles.titleBox}>
           <h1>Deposit</h1>
-          <p>Transfer BNB from BNB Smart Chain Testnet to your opBNB Testnet account.</p>
+          <p>Deposit ETH into the private web3 vault from your wallet through your own dynamic authorization</p>
         </div>
         <FromBox
-          title="From BNB Smart Chain Testnet"
+          title="From Wallet"
           data={data}
           chain={chain}
           chainList={chains}
@@ -64,9 +64,9 @@ const DepositPage = () => {
         <div className={classNames(styles.swapBox)}>
           <SwapOutlined className={styles.swapIcon} onClick={handleToWithDrawPage} />
         </div>
-        <ToBox title="To opBNB Testnet" receiveBalance={0} currentBalance={0} />
-        <Button className="mt20 baseBtn">Connect Wallet</Button>
-        <BottomBox />
+        <ToBox title="To SelfVault" receiveBalance={0} currentBalance={0} />
+        <Button className="mt20 baseBtn">Deposit</Button>
+        {/* <BottomBox /> */}
       </div>
     </div>
   )

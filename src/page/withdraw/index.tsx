@@ -47,10 +47,10 @@ const WithdrawPage = () => {
       <div className={styles.withDrawBox}>
         <div className={styles.titleBox}>
           <h1>Withdraw</h1>
-          <p>Transfer BNB from your opBNB Testnet account to BNB Smart Chain Testnet.</p>
+          <p>Withdraw ETH from the private web3 vault to your wallet via your own dynamic authorization</p>
         </div>
         <FromBox
-          title="From opBNB Testnet"
+          title="From SelfVault"
           data={data}
           chain={chain}
           chainList={chains}
@@ -59,9 +59,9 @@ const WithdrawPage = () => {
         <div className={classNames(styles.swapBox)}>
           <SwapOutlined className={styles.swapIcon} onClick={handleToWithDrawPage} />
         </div>
-        <ToBox title="To BNB Smart Chain Testnet" receiveBalance={0} currentBalance={0} />
-        <Button className="mt20 baseBtn">Connect Wallet</Button>
-        <BottomBox />
+        <ToBox title="To Wallet" receiveBalance={0} currentBalance={0} />
+        <Button className="mt20 baseBtn">Withdraw</Button>
+        {/* <BottomBox /> */}
       </div>
     </div>
   )

@@ -16,9 +16,9 @@ const ToBox = (props: ToBoxPropsType) => {
         </div>
         <div className={styles.toAmountBox}>
           <p>
-            You will receive: <span>{receiveBalance} BNB</span>
+            You will receive: <span>{receiveBalance} ETH</span>
           </p>
-          <p className="ft10">Current balance: {currentBalance} BNB</p>
+          <p className="ft10">Current balance: {currentBalance} ETH</p>
         </div>
       </div>
     </>
