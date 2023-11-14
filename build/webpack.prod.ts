@@ -23,7 +23,7 @@ const prodConfig: Configuration = merge(baseConfig, {
       patterns: [
         {
           from: path.resolve(__dirname, '../public'), // 复制public下文件
-          to: path.resolve(__dirname, '../dist'), // 复制到dist目录中
+          to: path.resolve(__dirname, '../../selfweb3/rsweb/dapp'), // 复制到dist目录中
           filter: source => !source.includes('index.html'), // 忽略index.html
         },
       ],

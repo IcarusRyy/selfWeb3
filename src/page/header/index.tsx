@@ -25,7 +25,7 @@ const Header = (props: HeaderPropsType) => {
   }
   return (
     <div className={classNames(styles.headersBox, isMobile && styles.userIconBox)}>
-      <Button onClick={() => navigate('/')}>home</Button>
+      <Button size="large" onClick={() => navigate('/')}>home</Button>
       {isMobile ? (
         <UserOutlined className={styles.userIcon} />
       ) : (
