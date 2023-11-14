@@ -6,6 +6,7 @@
 import * as wasm from './wasm.js'
 import * as user from './user.js'
 import * as web3 from './web3.js'
+import * as vault from "./vault.js";
 import * as verify3 from './verify.js'
 
 /* 使用方式: 
@@ -109,6 +110,10 @@ export function GetUser() {
 
 export function GetVerify() {
   return verify3
+}
+
+export function GetVault() {
+  return vault;
 }
 
 export function wasmCallback(flow, method, err, spinStatus) {

@@ -187,7 +187,7 @@ export function Register(walletAddress, selfAddress, recoverID, callback, failCb
       // 流程: contract.Register ===> webAuthnRegister ===> /api/datas/store ===> TOTP QRCode
       selfweb3.GetWeb3().Execute(
         'send',
-        Flow_Register,
+        "Register",
         walletAddress,
         0,
         registParams,
@@ -338,7 +338,7 @@ export function EnterDapp(walletAddress, selfAddress, code, callback, failed) {
 }
 
 // action: query, update
-function selfAuthVerify2(flow, walletAddress, action, verifyParams, callback) {
+export function selfAuthVerify2(flow, walletAddress, action, verifyParams, callback) {
   let formdata = new FormData()
   formdata.append('action', action)
   formdata.append('kind', 'relateVerify')
@@ -376,7 +376,7 @@ function selfAuthVerify2(flow, walletAddress, action, verifyParams, callback) {
   )
 }
 
-function selfAuthVerify3(flow, walletAddress, selfAddress, method, verifyParams, callback) {
+export function selfAuthVerify3(flow, walletAddress, selfAddress, method, verifyParams, callback) {
   packRelateVerifyParams(flow, walletAddress, 'update', verifyParams, function (merkleParams) {
     let loadParams = []
     loadParams.push(selfAddress)
