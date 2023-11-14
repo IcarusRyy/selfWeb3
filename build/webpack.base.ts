@@ -33,9 +33,9 @@ const baseConfig: Configuration = {
   // 打包出口文件
   output: {
     filename: 'static/js/[name].[chunkhash:8].js', // // 加上[chunkhash:8]
-    path: path.join(__dirname, '../dist'), // 打包结果输出路径
+    path: path.join(__dirname, '../../selfweb3/rsweb/dapp'), // 打包结果输出路径
     clean: true, // webpack4需要配置clean-webpack-plugin来删除dist文件,webpack5内置了
-    publicPath: '/', // 打包后文件的公共前缀路径
+    publicPath: '/dapp/', // 打包后文件的公共前缀路径
     // ... 这里自定义输出文件名的方式是，将某些资源发送到指定目录
     assetModuleFilename: 'images/[hash][ext][query]',
   },
