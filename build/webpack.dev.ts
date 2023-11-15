@@ -22,6 +22,16 @@ const port = '9092'
 // 合并公共配置,并添加开发环境配置
 const devConfig: Configuration = merge(baseConfig, {
   mode: 'development', // 开发模式,打包更加快速,省了代码优化步骤
+
+  output: {
+    filename: 'static/js/[name].[chunkhash:8].js', // // 加上[chunkhash:8]
+    path: path.join(__dirname, '../dist'), // 打包结果输出路径
+    clean: true, // webpack4需要配置clean-webpack-plugin来删除dist文件,webpack5内置了
+    publicPath: '/', // 打包后文件的公共前缀路径
+    // ... 这里自定义输出文件名的方式是，将某些资源发送到指定目录
+    assetModuleFilename: 'images/[hash][ext][query]',
+  },
+
   /**
     开发环境推荐：eval-cheap-module-source-map
     ● 本地开发首次打包慢点没关系,因为 eval 缓存的原因, 热更新会很快
