@@ -70,7 +70,6 @@ const HomePage = () => {
   //   navigate('/deposit')
   // }, [])
   useEffect(() => {
-    console.log(userInfo.isLoggedIn, 'userInfo.isLoggedIn')
     if (isConnected && !!connector) {
       if (!userInfo.isLoggedIn) {
         checkWalletForUser()
@@ -86,11 +85,6 @@ const HomePage = () => {
       setIsRegistered(undefined)
     }
   }, [isConnected, connector])
-
-  // init 回调成功参数
-  const initSuccessParamsCb = useCallback(() => {
-    userInfo.changeLoginStatus(true)
-  }, [])
 
   // user初始化成功回调
   const initUserSuccessCb = async (selfAddress: string, web2Address: string) => {
@@ -150,11 +144,12 @@ const HomePage = () => {
       if (!isConnected) {
         return open()
       }
+      if (!userInfo.isLoggedIn) return
+
       if (!selfAddress && selfAddress !== '') {
         return setShowRegisterModal(true)
       }
 
-      if (!userInfo.isLoggedIn) return
       if (pathname === '/deposit') return setTotpVerifyOpenModal(true)
       navigate(pathname)
     },
@@ -163,10 +158,21 @@ const HomePage = () => {
 
   // 生成TOTP注册二维码
   const getSelfID = (selfAddress: string) => {
-    return selfAddress.substring(0, 4) + "..." + selfAddress.substring(selfAddress.length - 4, selfAddress.length)
+    return (
+      selfAddress.substring(0, 4) +
+      '...' +
+      selfAddress.substring(selfAddress.length - 4, selfAddress.length)
+    )
   }
   const getQRCodeLink = (selfAddress: string, QRCode: string) => {
-    return 'otpauth://totp/selfweb3-' + GetWeb3().networkId + ':' + getSelfID(selfAddress) + '?secret=' + QRCode.replace(/=/g,'')
+    return (
+      'otpauth://totp/selfweb3-' +
+      GetWeb3().networkId +
+      ':' +
+      getSelfID(selfAddress) +
+      '?secret=' +
+      QRCode.replace(/=/g, '')
+    )
   }
 
   // 注册相关
@@ -179,7 +185,6 @@ const HomePage = () => {
     setIsRegistered(true)
     setShowRegisterModal(false)
     setSelfAddress(SelfAddress)
-    // console.log(QRCode, '注册  QRCode')
     setQRCode(getQRCodeLink(SelfAddress, QRCode))
     handleOpenQRcodeModal(true)
   }, [])
@@ -202,7 +207,6 @@ const HomePage = () => {
   const resetSuccessCb = useCallback((SelfAddress: string, QRCode: string) => {
     message.success('Reset successful')
     setResetLoading(true)
-    // console.log(QRCode, '重置 QRCode')
     handleOpenQRcodeModal(true)
     setQRCode(getQRCodeLink(SelfAddress, QRCode))
     setShowResetModal(false)
@@ -275,7 +279,7 @@ const HomePage = () => {
             cover={<img alt="Preference" src={preferences} />}
           >
             <Meta
-              title={selfAddress ? getSelfID(selfAddress) : "SelfWeb3"}
+              title={selfAddress ? getSelfID(selfAddress) : 'SelfWeb3'}
               description="System settings, deployed addresses, and personalization preferences"
             />
           </Card>
@@ -332,7 +336,7 @@ const HomePage = () => {
           onOk={(code: string) => handleInDeposit(code)}
         />
       )}
-      {systemInfoOpenModal && !!selfAddress && !!web2Address && (
+      {systemInfoOpenModal && (
         <SystemInfoModal
           web2Address={web2Address}
           selfAddress={selfAddress}
