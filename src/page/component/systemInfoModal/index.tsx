@@ -33,7 +33,7 @@ const SystemInfoModal = (props: SystemInfoModalPropsType) => {
         <div>
           <div>
             <span>Self: </span>
-            <span>{selfAddress}</span>
+            <span>{selfAddress ? selfAddress:'Your own unique web3 address'}</span>
           </div>
           <div>
             <span>Web2: </span>

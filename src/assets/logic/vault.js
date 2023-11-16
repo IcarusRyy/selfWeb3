@@ -2,6 +2,7 @@
 import Web3 from './contract/web3.js';
 import * as selfweb3 from './index.js';
 
+export const Flow_VaultBalance = "VaultBalance";
 export const Flow_VaultDeposit = "VaultDeposit";
 export const Flow_VaultWithdraw = "VaultWithdraw";
 
@@ -20,7 +21,7 @@ export function Balance(walletAddress, selfAddress, callback) {
     selfweb3.GetWeb3().Execute("call", "Balance", walletAddress, 0, web3Params, function (balance) {
         if (callback !== undefined && callback !== null) callback(Web3.utils.fromWei(balance + '', 'ether'));
     }, function (err) {
-        selfweb3.ShowMsg('error', flow, 'sign message failed', err);
+        selfweb3.ShowMsg('error', Flow_VaultBalance, 'sign message failed', err);
     });
 }
 
