@@ -29,12 +29,12 @@ export const routes: MyRoute[] = [
     isMenu: true,
     element: <WithdrawPage />,
   },
-  {
-    path: '/history',
-    key: 'history',
-    isMenu: true,
-    element: <HistoryPage />,
-  },
+  // {
+  //   path: '/history',
+  //   key: 'history',
+  //   isMenu: true,
+  //   element: <HistoryPage />,
+  // },
   {
     path: '*',
     key: '*',

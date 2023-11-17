@@ -151,10 +151,12 @@ const HomePage = () => {
         return setShowRegisterModal(true)
       }
 
-      if (pathname === '/deposit') return setTotpVerifyOpenModal(true)
+      if (pathname === '/deposit') {
+        return setTotpVerifyOpenModal(true)
+      }
       navigate(pathname)
     },
-    [isConnected, selfAddress],
+    [isConnected, selfAddress, userInfo.isLoggedIn],
   )
 
   // 生成TOTP注册二维码

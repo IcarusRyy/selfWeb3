@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './index.less'
 import { Button } from 'antd'
-import { UserOutlined } from '@ant-design/icons'
+import { RollbackOutlined, UserOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 import { useWeb3Modal } from '@web3modal/react'
 import { Web3Button } from '@web3modal/react'
@@ -25,7 +25,12 @@ const Header = (props: HeaderPropsType) => {
   }
   return (
     <div className={classNames(styles.headersBox, isMobile && styles.userIconBox)}>
-      <Button size="large" onClick={() => navigate('/')}>home</Button>
+      <Button
+        size="large"
+        icon={<RollbackOutlined />}
+        onClick={() => navigate('/')}
+        className={styles.headerBtn}
+      />
       {isMobile ? (
         <UserOutlined className={styles.userIcon} />
       ) : (
@@ -33,7 +38,9 @@ const Header = (props: HeaderPropsType) => {
           {/* <Button className={styles.headerBtn} onClick={handleConnectWallet}>
             Connect Wallet
           </Button> */}
-          <Web3Button icon="hide" label="CONNECT" />
+          <div className={styles.web3BtnBox}>
+            <Web3Button icon="hide" label="CONNECT" />
+          </div>
         </>
       )}
     </div>

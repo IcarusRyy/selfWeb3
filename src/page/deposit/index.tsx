@@ -65,7 +65,7 @@ const DepositPage = () => {
     if (!!userInfo.selfAddress) {
       Balance(address, userInfo.selfAddress, getSelfWeb3BalanceSuccessCb)
     }
-  }, [])
+  }, [userInfo.selfAddress, address])
   // from 相关
   const handleFromAmount = useCallback(
     _.debounce((amount: number | string) => {
@@ -76,7 +76,7 @@ const DepositPage = () => {
   // deposit相关
   const depositSuccessCb = useCallback(() => {
     refetch()
-    handleGetSelfWeb3Balance
+    handleGetSelfWeb3Balance()
     setTotpVerifyLoading(false)
     setTotpVerifyOpenModal(false)
   }, [])
