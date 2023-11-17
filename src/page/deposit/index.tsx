@@ -108,7 +108,7 @@ const DepositPage = () => {
         <div className={styles.titleBox}>
           <h1>Deposit</h1>
           <p>
-            Deposit ETH into the private web3 vault from your wallet through your own dynamic
+            Deposit ETH into the private web3 vault through your own dynamic
             authorization
           </p>
         </div>
@@ -121,9 +121,9 @@ const DepositPage = () => {
           // chainList={chains}
           // handleChangeChain={handleChangeChain}
         />
-        <div className={classNames(styles.swapBox)}>
+        {/* <div className={classNames(styles.swapBox)}>
           <SwapOutlined className={styles.swapIcon} onClick={handleToWithDrawPage} />
-        </div>
+        </div> */}
         <ToBox title="To SelfVault" rate={0} currentBalance={balance} />
         <Button className="mt20 baseBtn" onClick={handleBeforeDeposit}>
           Deposit

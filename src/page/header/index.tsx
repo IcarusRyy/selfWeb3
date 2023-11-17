@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './index.less'
 import { Button } from 'antd'
-import { RollbackOutlined, UserOutlined } from '@ant-design/icons'
+import { HomeOutlined, UserOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 import { useWeb3Modal } from '@web3modal/react'
 import { Web3Button } from '@web3modal/react'
@@ -27,7 +27,7 @@ const Header = (props: HeaderPropsType) => {
     <div className={classNames(styles.headersBox, isMobile && styles.userIconBox)}>
       <Button
         size="large"
-        icon={<RollbackOutlined />}
+        icon={<HomeOutlined />}
         onClick={() => navigate('/')}
         className={styles.headerBtn}
       />
