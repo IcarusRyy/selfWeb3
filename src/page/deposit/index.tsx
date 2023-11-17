@@ -74,17 +74,21 @@ const DepositPage = () => {
     [],
   )
   // deposit相关
-  const depositCb = useCallback(() => {
+  const depositSuccessCb = useCallback(() => {
     refetch()
     handleGetSelfWeb3Balance
+    setTotpVerifyLoading(false)
+    setTotpVerifyOpenModal(false)
+  }, [])
+  const depositFailCb = useCallback(() => {
     setTotpVerifyLoading(false)
   }, [])
   const handleDeposit = useCallback(
     (code: string) => {
       setTotpVerifyLoading(true)
-      Deposit(address, userInfo.selfAddress, amount, code, depositCb)
+      Deposit(address, userInfo.selfAddress, amount, code, depositSuccessCb, depositFailCb)
     },
-    [address, userInfo.selfAddress, amount, depositCb],
+    [address, userInfo.selfAddress, amount, depositSuccessCb, depositFailCb],
   )
   const handleBeforeDeposit = useCallback(() => {
     setTotpVerifyOpenModal(true)
