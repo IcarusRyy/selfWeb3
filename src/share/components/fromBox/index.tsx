@@ -9,7 +9,7 @@ interface FromBoxPropsType {
   chainList?: any[]
   chain?: any
   data: any
-  balance: number | string
+  balance?: number | string
   handleChangeChain?: (id: number) => void
 }
 

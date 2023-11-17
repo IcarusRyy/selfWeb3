@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import styles from './index.less'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import classNames from 'classnames'
 import { SwapOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
@@ -32,15 +32,20 @@ const DepositPage = () => {
     const res = getChainIcon(id)
     // setChainIcon(res || '')
   }
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!userInfo.isLoggedIn) {
       navigate('/')
     }
-    // if (chain?.id) {
-    //   handleIcon(chain.id)
-    //   refetch()
-    // }
   }, [userInfo.isLoggedIn])
+  // useEffect(() => {
+  //   if (!userInfo.isLoggedIn) {
+  //     navigate('/')
+  //   }
+  // if (chain?.id) {
+  //   handleIcon(chain.id)
+  //   refetch()
+  // }
+  // }, [userInfo.isLoggedIn])
   useEffect(() => {
     if (userInfo.selfAddress) {
       handleGetSelfWeb3Balance()
@@ -61,9 +66,13 @@ const DepositPage = () => {
   const getSelfWeb3BalanceSuccessCb = useCallback((balance: string | number) => {
     setBalance(balance)
   }, [])
+  const getSelfWeb3BalanceFaildCb = useCallback((balance: string | number) => {
+    setBalance(0)
+    return message.error('Failed to get balance')
+  }, [])
   const handleGetSelfWeb3Balance = useCallback(() => {
     if (!!userInfo.selfAddress) {
-      Balance(address, userInfo.selfAddress, getSelfWeb3BalanceSuccessCb)
+      Balance(address, userInfo.selfAddress, getSelfWeb3BalanceSuccessCb, getSelfWeb3BalanceFaildCb)
     }
   }, [userInfo.selfAddress, address])
   // from 相关

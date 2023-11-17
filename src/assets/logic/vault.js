@@ -15,7 +15,7 @@ vue demo:
         self.modelBalance = balance;
     })
 */
-export function Balance(walletAddress, selfAddress, callback) {
+export function Balance(walletAddress, selfAddress, callback, failedCb) {
   var web3Params = []
   web3Params.push(selfAddress)
   selfweb3.GetWeb3().Execute(
@@ -29,6 +29,7 @@ export function Balance(walletAddress, selfAddress, callback) {
         callback(Web3.utils.fromWei(balance + '', 'ether'))
     },
     function (err) {
+      failedCb()
       selfweb3.ShowMsg('error', Flow_VaultBalance, 'sign message failed', err)
     },
   )
@@ -114,7 +115,7 @@ vue demo:
         })
     })
 */
-export function Withdraw(walletAddress, selfAddress, amount, code, callback) {
+export function Withdraw(walletAddress, selfAddress, amount, code, callback, failedCb) {
   let web3Map = { method: 'TOTPVerify', action: 'query', relateTimes: '1' }
   selfweb3
     .GetVerify()
@@ -153,6 +154,7 @@ export function Withdraw(walletAddress, selfAddress, amount, code, callback) {
                         if (callback !== undefined && callback !== null) callback()
                       },
                       function (err) {
+                        failedCb()
                         selfweb3.ShowMsg(
                           'error',
                           Flow_VaultWithdraw,
@@ -163,6 +165,7 @@ export function Withdraw(walletAddress, selfAddress, amount, code, callback) {
                     )
                   },
                   function (err) {
+                    failedCb()
                     selfweb3.ShowMsg('error', Flow_VaultWithdraw, 'webAuthn verify failed', err)
                   },
                 )
