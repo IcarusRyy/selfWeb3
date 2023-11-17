@@ -11,7 +11,7 @@ const ToBox = (props: ToBoxPropsType) => {
   const { title, receiveBalance, currentBalance, rate } = props
   return (
     <>
-      <div className={styles.toBox} key={currentBalance}>
+      <div className={styles.toBox}>
         <div className={styles.toTitleBox}>
           <span>{title}</span>
         </div>
