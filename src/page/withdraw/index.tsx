@@ -117,7 +117,6 @@ const WithdrawPage = () => {
         </div>
         <FromBox
           title="From SelfVault"
-          data={data}
           balance={balance}
           handleFromAmount={handleFromAmount}
           // chain={chain}

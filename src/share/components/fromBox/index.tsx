@@ -8,7 +8,7 @@ interface FromBoxPropsType {
   handleFromAmount: (amount: number | string) => void
   chainList?: any[]
   chain?: any
-  data: any
+  data?: any
   balance?: number | string
   handleChangeChain?: (id: number) => void
 }
@@ -50,7 +50,7 @@ const FromBox = (props: FromBoxPropsType) => {
             // }
           />
         </div>
-        <div className="mt10">Balance: {data?.formatted} ETH</div>
+        <div className="mt10">Balance: {data?.formatted || balance} ETH</div>
       </div>
     </div>
   )
