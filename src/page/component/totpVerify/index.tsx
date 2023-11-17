@@ -83,14 +83,8 @@ const TotpVerifyModal = (props: TotpVerifyModalPropsType) => {
               onChange={e => handleChange(e, index)}
               onKeyDown={e => handleKeyDown(e, index)}
               onPaste={handlePaste}
+              className={styles.inputItem}
               ref={ref => (inputRefs.current[index] = ref)}
-              style={{
-                width: '36px',
-                height: '36px',
-                marginRight: '4px',
-                textAlign: 'center',
-                fontSize: '18px',
-              }}
             />
           ))}
         </div>
