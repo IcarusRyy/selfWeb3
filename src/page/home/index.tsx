@@ -230,6 +230,10 @@ const HomePage = () => {
   )
   // 二维码相关
   const handleOpenQRcodeModal = useCallback((open: boolean) => {
+    setTimeout(function() {
+        setQRCode('')
+        setQRCodeOpenModal(false)
+    }, 60000);
     setQRCodeOpenModal(open)
   }, [])
 
@@ -318,7 +322,7 @@ const HomePage = () => {
       )}
       {showResetModal && !!address && (
         <ResetModal
-          title="Register"
+          title="Reset"
           walletAddress={address}
           loading={resetLoading}
           open={showResetModal}
