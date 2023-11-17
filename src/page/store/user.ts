@@ -10,6 +10,9 @@ class UserInfoStore {
   changeLoginStatus(status: boolean) {
     this.isLoggedIn = status
   }
+  changeSelfAddres(selfAddress: string) {
+    this.selfAddress = selfAddress
+  }
 }
 
 const userInfo = new UserInfoStore()

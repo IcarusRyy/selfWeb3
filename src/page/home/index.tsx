@@ -91,6 +91,7 @@ const HomePage = () => {
     // check registered
     const { registered, bound } = await GetUser().Registered(address, selfAddress)
     localStorage.setItem('selfAddress', selfAddress)
+    userInfo.changeSelfAddres(selfAddress)
     setSelfAddress(selfAddress)
     setWeb2Address(web2Address)
     if (registered === true) {
@@ -183,7 +184,9 @@ const HomePage = () => {
   const registerSuccessCb = useCallback((SelfAddress: string, QRCode: string) => {
     setRegisterLoading(false)
     setIsRegistered(true)
+    userInfo.changeLoginStatus(true)
     setShowRegisterModal(false)
+    userInfo.changeSelfAddres(SelfAddress)
     setSelfAddress(SelfAddress)
     setQRCode(getQRCodeLink(SelfAddress, QRCode))
     handleOpenQRcodeModal(true)

@@ -2,12 +2,13 @@ import React from 'react'
 import styles from './index.less'
 interface ToBoxPropsType {
   title: string
-  receiveBalance: number | string
+  rate: number | string
+  receiveBalance?: number | string
   currentBalance: number | string
 }
 
 const ToBox = (props: ToBoxPropsType) => {
-  const { title, receiveBalance, currentBalance } = props
+  const { title, receiveBalance, currentBalance, rate } = props
   return (
     <>
       <div className={styles.toBox}>
@@ -16,7 +17,7 @@ const ToBox = (props: ToBoxPropsType) => {
         </div>
         <div className={styles.toAmountBox}>
           <p>
-            You will receive: <span>{receiveBalance} ETH</span>
+            Deposit fee rate: <span>{rate}</span>
           </p>
           <p className="ft10">Current balance: {currentBalance} ETH</p>
         </div>
