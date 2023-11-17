@@ -40,10 +40,13 @@ const WithdrawPage = () => {
   useLayoutEffect(() => {
     if (!userInfo.isLoggedIn) {
       navigate('/')
-    } else {
-      handleGetSelfWeb3Balance()
     }
   }, [userInfo.isLoggedIn])
+  useEffect(() => {
+    if (userInfo.selfAddress) {
+      handleGetSelfWeb3Balance()
+    }
+  }, [userInfo.selfAddress])
   // 获取selfWeb3余额
   const getSelfWeb3BalanceSuccessCb = useCallback((balance: string | number) => {
     setBalance(balance)
