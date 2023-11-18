@@ -84,7 +84,7 @@ const RestModal: FC<RegisterModalPropsType> = (props: RegisterModalPropsType) =>
     >
       <Form form={form} initialValues={{ resetKind: 'TOTP' }} {...formItemLayout}>
         <Form.Item<FieldType>
-          label="resetKind"
+          label="kind"
           name="resetKind"
           rules={[{ required: true, message: 'Please select your resetKind!' }]}
         >

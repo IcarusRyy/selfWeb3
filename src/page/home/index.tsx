@@ -87,17 +87,17 @@ const HomePage = () => {
   }, [isConnected, connector])
 
   // user初始化成功回调
-  const initUserSuccessCb = async (selfAddress: string, web2Address: string) => {
+  const initUserSuccessCb = async (selfAddr: string, web2Addr: string) => {
     // check registered
-    const { registered, bound } = await GetUser().Registered(address, selfAddress)
-    localStorage.setItem('selfAddress', selfAddress)
-    userInfo.changeSelfAddres(selfAddress)
-    setSelfAddress(selfAddress)
-    setWeb2Address(web2Address)
+    const { registered, bound } = await GetUser().Registered(address, selfAddr)
+    localStorage.setItem('selfAddress', selfAddr)
+    userInfo.changeSelfAddres(selfAddr)
+    setSelfAddress(selfAddr)
+    setWeb2Address(web2Addr)
     if (registered === true) {
       if (bound === true) {
         // 已注册, 钱包地址一致, 开始加载用户私有信息
-        GetUser().Load(address, selfAddress, function () {
+        GetUser().Load(address, selfAddr, function () {
           // 已注册, 钱包地址一致, 用拿到的地址信息初始化profile(第一个卡片的内容), 用户加载流程完成
           setIsRegistered(registered)
 
@@ -230,6 +230,10 @@ const HomePage = () => {
   )
   // 二维码相关
   const handleOpenQRcodeModal = useCallback((open: boolean) => {
+    setTimeout(function() {
+        setQRCode('')
+        setQRCodeOpenModal(false)
+    }, 60000);
     setQRCodeOpenModal(open)
   }, [])
 
@@ -318,7 +322,7 @@ const HomePage = () => {
       )}
       {showResetModal && !!address && (
         <ResetModal
-          title="Register"
+          title="Reset"
           walletAddress={address}
           loading={resetLoading}
           open={showResetModal}

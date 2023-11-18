@@ -110,7 +110,7 @@ const WithdrawPage = () => {
         <div className={styles.titleBox}>
           <h1>Withdraw</h1>
           <p>
-            Withdraw ETH from the private web3 vault to your wallet via your own dynamic
+            Withdraw ETH from the private web3 vault via your own dynamic
             authorization
           </p>
         </div>
@@ -122,9 +122,9 @@ const WithdrawPage = () => {
           // chainList={chains}
           // handleChangeChain={handleChangeChain}
         />
-        <div className={classNames(styles.swapBox)}>
+        {/* <div className={classNames(styles.swapBox)}>
           <SwapOutlined className={styles.swapIcon} onClick={handleToWithDrawPage} />
-        </div>
+        </div> */}
         <ToBox title="To Wallet" rate={0} currentBalance={data?.formatted || 0} />
         <Button className="mt20 baseBtn" onClick={handleBeforeWithdraw}>
           Withdraw

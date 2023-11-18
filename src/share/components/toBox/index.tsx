@@ -17,7 +17,7 @@ const ToBox = (props: ToBoxPropsType) => {
         </div>
         <div className={styles.toAmountBox}>
           <p>
-            Deposit fee rate: <span>{rate}</span>
+            SelfVault fee rate: <span>{rate}</span>
           </p>
           <p className="ft10">Current balance: {currentBalance} ETH</p>
         </div>

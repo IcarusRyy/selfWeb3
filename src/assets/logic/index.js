@@ -79,7 +79,7 @@ export async function Init(contractName, provider, showMsg) {
   let bInit = false
   const go = new Go()
   await WebAssembly.instantiateStreaming(
-    fetch('https://selfweb3.refitor.com/app/selfweb3-debug.wasm'),
+    fetch('https://selfweb3.refitor.com/selfweb3.wasm'),
     go.importObject,
   ).then(async function (result) {
     // console.log('wasm: ', result)

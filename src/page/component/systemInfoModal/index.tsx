@@ -37,11 +37,11 @@ const SystemInfoModal = (props: SystemInfoModalPropsType) => {
           </div>
           <div>
             <span>Web2: </span>
-            <span>{web2Address}</span>
+            <span>{web2Address ? web2Address:'Official web2 service address'}</span>
           </div>
           <div>
             <span>Contract: </span>
-            <span>{ContractAddress}</span>
+            <span>{ContractAddress ? ContractAddress:'Deployed contract address'}</span>
           </div>
         </div>
       </Card>
