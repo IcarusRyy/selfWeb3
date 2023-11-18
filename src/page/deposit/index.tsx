@@ -24,7 +24,6 @@ const DepositPage = () => {
   const { data, refetch } = useBalance({
     address,
     watch: true,
-    enabled: false,
   })
   // const [chainIcon, setChainIcon] = useState<string>('')
   // 获取区块链列表icon
@@ -115,7 +114,7 @@ const DepositPage = () => {
         <FromBox
           title="From Wallet"
           data={data}
-          balance={balance}
+          // balance={balance}
           handleFromAmount={handleFromAmount}
           // chain={chain}
           // chainList={chains}
@@ -134,7 +133,10 @@ const DepositPage = () => {
         <TotpVerifyModal
           loading={totpVerifyLoading}
           open={totpVerifyOpenModal}
-          onCancel={() => setTotpVerifyOpenModal(false)}
+          onCancel={() => {
+            setTotpVerifyOpenModal(false)
+            setTotpVerifyLoading(false)
+          }}
           onOk={(code: string) => handleDeposit(code)}
         />
       )}

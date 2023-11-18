@@ -27,7 +27,6 @@ const WithdrawPage = () => {
   const { data, refetch } = useBalance({
     address,
     watch: true,
-    enabled: false,
   })
   const navigate = useNavigate()
 
@@ -135,7 +134,10 @@ const WithdrawPage = () => {
         <TotpVerifyModal
           loading={totpVerifyLoading}
           open={totpVerifyOpenModal}
-          onCancel={() => setTotpVerifyOpenModal(false)}
+          onCancel={() => {
+            setTotpVerifyOpenModal(false)
+            setTotpVerifyLoading(false)
+          }}
           onOk={(code: string) => handleWithdraw(code)}
         />
       )}

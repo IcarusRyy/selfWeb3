@@ -248,7 +248,7 @@ const HomePage = () => {
       setTotpVerifyLoading(true)
       EnterDapp(address, selfAddress, code, inDepositSuccessCb, inDepositFailCb)
     },
-    [address],
+    [address, selfAddress, inDepositSuccessCb, inDepositFailCb],
   )
   return (
     <div className={styles.homeBox}>
@@ -337,7 +337,10 @@ const HomePage = () => {
         <TotpVerifyModal
           loading={totpVerifyLoading}
           open={totpVerifyOpenModal}
-          onCancel={() => setTotpVerifyOpenModal(false)}
+          onCancel={() => {
+            setTotpVerifyOpenModal(false)
+            setTotpVerifyLoading(false)
+          }}
           onOk={(code: string) => handleInDeposit(code)}
         />
       )}
